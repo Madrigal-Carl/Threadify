@@ -146,27 +146,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-
-
     public boolean userAuth(String username, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
+        SharedPreferences pref = new SharedPreferences(context);
 
         String selection = String.format("%s = ? AND %s = ?", COLUMN_USERNAME, COLUMN_PASSWORD);
         String[] selectionArgs = {username, password};
 
         Cursor cursor = db.query(
                 TABLE_USERS,
-                new String[]{COLUMN_USER_ID},
+                new String[]{COLUMN_USER_ID, COLUMN_FULLNAME, COLUMN_USERNAME},
                 selection, selectionArgs,
                 null,
                 null,
                 null);
 
-        boolean userExists = cursor.getCount() > 0;
+        if (cursor.moveToFirst()) {
+
+            int userId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_USER_ID));
+            String fullname = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_FULLNAME));
+            String user_name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USERNAME));
+
+            pref.setLoginState(true);
+            pref.setUserId(userId);
+            pref.setUsername(user_name);
+            pref.setFullname(fullname);
+
+            cursor.close();
+            db.close();
+            return true;
+        }
 
         cursor.close();
         db.close();
-
-        return userExists;
+        return false;
     }
 }
