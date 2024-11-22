@@ -42,7 +42,7 @@ public class SharedPreferences {
     }
 
     public String getFullname() {
-        return sharedPreferences.getString(KEY_FULLNAME, "Unknown");
+        return sharedPreferences.getString(KEY_FULLNAME, "User123");
     }
 
     public void setUsername(String username) {
@@ -51,7 +51,7 @@ public class SharedPreferences {
     }
 
     public String getUsername() {
-        return sharedPreferences.getString(KEY_USERNAME, "Guest");
+        return sharedPreferences.getString(KEY_USERNAME, "User123");
     }
 
     public void clearPreferences() {
