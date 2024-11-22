@@ -10,10 +10,10 @@
         android:id="@+id/current_balanceView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="624dp"
+        android:layout_marginTop="40dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.393"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -22,24 +22,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@android:drawable/arrow_down_float"
-        tools:layout_editor_absoluteX="87dp"
-        tools:layout_editor_absoluteY="529dp" />
+        tools:layout_editor_absoluteX="186dp"
+        tools:layout_editor_absoluteY="181dp" />
 
     <ImageButton
         android:id="@+id/cash_outBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@android:drawable/arrow_up_float"
-        tools:layout_editor_absoluteX="225dp"
-        tools:layout_editor_absoluteY="529dp" />
+        tools:layout_editor_absoluteX="122dp"
+        tools:layout_editor_absoluteY="227dp" />
 
     <ImageButton
         android:id="@+id/buy_loadBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@android:drawable/bottom_bar"
-        tools:layout_editor_absoluteX="34dp"
-        tools:layout_editor_absoluteY="373dp" />
+        tools:layout_editor_absoluteX="33dp"
+        tools:layout_editor_absoluteY="80dp" />
 
     <ImageButton
         android:id="@+id/pay_billsBtn"
