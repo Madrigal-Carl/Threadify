@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainMenuActivity extends AppCompatActivity implements View.OnClickListener {
 
     TextView current_balance;
-    ImageButton cash_in, cash_out, buy_load, pay_bills;
+    ImageButton cash_in, cash_out, buy_load, pay_bills, transaction_history;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,11 +23,13 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         cash_out = findViewById(R.id.cash_outBtn);
         buy_load = findViewById(R.id.buy_loadBtn);
         pay_bills = findViewById(R.id.pay_billsBtn);
+        transaction_history = findViewById(R.id.transaction_historyBtn);
 
         cash_in.setOnClickListener(this);
         cash_out.setOnClickListener(this);
         buy_load.setOnClickListener(this);
         pay_bills.setOnClickListener(this);
+        transaction_history.setOnClickListener(this);
 
     }
 
@@ -55,6 +57,12 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
             case R.id.pay_billsBtn:
                 Intent toPayBills = new Intent(MainMenuActivity.this, PayBillsActivity.class);
                 startActivity(toPayBills);
+                finish();
+                break;
+
+            case R.id.transaction_historyBtn:
+                Intent toTransactionHistory = new Intent(MainMenuActivity.this, TransactionHistoryActivity.class);
+                startActivity(toTransactionHistory);
                 finish();
                 break;
 

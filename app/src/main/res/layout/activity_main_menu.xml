@@ -49,4 +49,12 @@
         tools:layout_editor_absoluteX="302dp"
         tools:layout_editor_absoluteY="227dp" />
 
+    <ImageButton
+        android:id="@+id/transaction_historyBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@android:drawable/btn_radio"
+        tools:layout_editor_absoluteX="183dp"
+        tools:layout_editor_absoluteY="365dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
