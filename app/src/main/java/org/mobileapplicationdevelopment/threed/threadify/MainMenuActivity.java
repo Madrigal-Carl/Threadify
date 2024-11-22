@@ -35,7 +35,7 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) { // Fixed the incorrect view.R.id to view.getId()
+        switch (view.getId()) {
             case R.id.cash_inBtn:
                 Intent toCashIn = new Intent(MainMenuActivity.this, CashInActivity.class);
                 startActivity(toCashIn);
