@@ -10,10 +10,10 @@
         android:id="@+id/current_balanceView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="624dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.393"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,30 +23,30 @@
         android:layout_height="wrap_content"
         app:srcCompat="@android:drawable/arrow_down_float"
         tools:layout_editor_absoluteX="87dp"
-        tools:layout_editor_absoluteY="300dp" />
+        tools:layout_editor_absoluteY="529dp" />
 
     <ImageButton
         android:id="@+id/cash_outBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@android:drawable/arrow_up_float"
-        tools:layout_editor_absoluteX="223dp"
-        tools:layout_editor_absoluteY="294dp" />
+        tools:layout_editor_absoluteX="225dp"
+        tools:layout_editor_absoluteY="529dp" />
 
     <ImageButton
         android:id="@+id/buy_loadBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@android:drawable/bottom_bar"
-        tools:layout_editor_absoluteX="-2dp"
-        tools:layout_editor_absoluteY="369dp" />
+        tools:layout_editor_absoluteX="34dp"
+        tools:layout_editor_absoluteY="373dp" />
 
     <ImageButton
         android:id="@+id/pay_billsBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@android:drawable/btn_default"
-        tools:layout_editor_absoluteX="123dp"
-        tools:layout_editor_absoluteY="443dp" />
+        tools:layout_editor_absoluteX="302dp"
+        tools:layout_editor_absoluteY="227dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
