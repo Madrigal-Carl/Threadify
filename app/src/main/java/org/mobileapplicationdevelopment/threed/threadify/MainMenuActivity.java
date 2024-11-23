@@ -2,21 +2,36 @@ package org.mobileapplicationdevelopment.threed.threadify;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainMenuActivity extends AppCompatActivity implements View.OnClickListener {
-
     TextView current_balance;
-    ImageButton cash_in, cash_out, buy_load, pay_bills, transaction_history;
+    Button cash_in, cash_out, buy_load, pay_bills, transaction_history;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+
+
+        //Action Bar
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setLogo(R.drawable.actionlogo);
+            getSupportActionBar().setDisplayUseLogoEnabled(true);
+            getSupportActionBar().setTitle("   Threadify");
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+        }
+        //end of action bar
+
 
         current_balance = findViewById(R.id.current_balanceView);
         cash_in = findViewById(R.id.cash_inBtn);
@@ -31,6 +46,12 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         pay_bills.setOnClickListener(this);
         transaction_history.setOnClickListener(this);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_bar, menu);
+        return true;
     }
 
     @Override

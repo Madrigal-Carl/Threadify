@@ -1,22 +1,56 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.Threadify" parent="Theme.AppCompat.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <!-- Action Bar customization -->
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">false</item>
+        <item name="windowActionBarOverlay">false</item>
+        <item name="android:displayOptions">useLogo|showHome|showTitle</item>
+
+        <!-- Primary brand color -->
+        <item name="colorPrimary">@color/background_color</item>
+        <item name="colorPrimaryVariant">#131a30</item>
         <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
+        <!-- Secondary brand color -->
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
+        <item name="colorOnSecondary">#131a30</item>
+        <!-- Status bar color -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+
+        <!-- Customize Action Bar style -->
+        <item name="actionBarStyle">@style/CustomActionBar</item>
+        <item name="actionMenuTextColor">@color/text_color_dark</item>
+        <item name="actionOverflowButtonStyle">@style/CustomOverflowButton</item>
+        <item name="popupMenuStyle">@style/CustomPopupMenu</item>
     </style>
 
-
+    <!-- Splash screen theme -->
     <style name="splash_screen" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <!-- Custom Action Bar Style -->
+    <style name="CustomActionBar" parent="@style/Widget.AppCompat.ActionBar">
+        <item name="titleTextStyle">@style/ActionBarTitleText</item>
+    </style>
+
+    <!-- Custom Title Text Style -->
+    <style name="ActionBarTitleText" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/text_color_dark</item>
+        <item name="android:fontFamily">@font/poppins_bold_italic</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <!-- Custom Overflow Button -->
+    <style name="CustomOverflowButton" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_baseline_menu_24</item>
+        <item name="android:tint">@color/text_color_dark</item> <!-- Tint overflow icon black -->
+    </style>
+
+    <!-- Custom Popup Menu -->
+    <style name="CustomPopupMenu" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:textColor">@color/text_color_dark</item> <!-- Text color for menu items -->
     </style>
 </resources>
