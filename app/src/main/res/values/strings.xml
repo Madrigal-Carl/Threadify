@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Threadify</string>
+    <string name="about_app">Threadify is a cutting-edge digital wallet app designed to revolutionize the way you handle money. Whether you’re sending funds to friends and family, paying bills, or shopping online, Threadify offers a fast, secure, and seamless experience for all your financial needs. Inspired by the functionality of e-wallets like GCash and PayMaya, Threadify takes convenience to the next level by providing instant money transfers, flexible payment solutions, and an intuitive user interface that’s perfect for everyone.
+
+What sets Threadify apart is its robust security features, ensuring that your transactions and personal data remain protected at all times. With Threadify, you can manage your finances anytime, anywhere, without the stress of traditional banking systems. It’s not just a wallet; it’s your partner in achieving financial independence. Empower your lifestyle with Threadify and experience the future of money management today!
+</string>
 </resources>
