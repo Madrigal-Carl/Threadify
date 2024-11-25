@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 public class CashInActivity extends AppCompatActivity {
@@ -16,9 +17,11 @@ public class CashInActivity extends AppCompatActivity {
 
         //Action Bar
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setLogo(R.drawable.ic_baseline_arrow_back_24);
-            getSupportActionBar().setDisplayUseLogoEnabled(true);
+//            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
+//            getSupportActionBar().setLogo(R.drawable.ic_baseline_arrow_back_24);
+//            getSupportActionBar().setDisplayUseLogoEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
         //end of action bar
@@ -26,9 +29,8 @@ public class CashInActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
+        if (item.getItemId() == android.R.id.home) {
 
-        if (id == android.R.id.home){
             Intent intent = new Intent(this, MainMenuActivity.class);
             startActivity(intent);
             finish();
