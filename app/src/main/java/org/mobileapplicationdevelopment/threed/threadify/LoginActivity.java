@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (db.userAuth(user_name, pass)) {
             Toast.makeText(this, String.format("Welcome ",user_name), Toast.LENGTH_SHORT).show();
-            Intent toMain = new Intent(LoginActivity.this, MainMenuActivity.class);
+            Intent toMain = new Intent(this, MainMenuActivity.class);
             startActivity(toMain);
             finish();
         } else {

@@ -3,12 +3,14 @@ package org.mobileapplicationdevelopment.threed.threadify;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainMenuActivity extends AppCompatActivity implements View.OnClickListener {
@@ -49,12 +51,6 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_bar, menu);
-        return true;
-    }
-
-    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.cash_inBtn:
@@ -91,5 +87,35 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
                 break;
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_bar, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.profile_id) {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+        if (id == R.id.about_id) {
+            Intent intent = new Intent(this, AboutActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+        if (id == R.id.developers_id) {
+            Intent intent = new Intent(this, DevelopersActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

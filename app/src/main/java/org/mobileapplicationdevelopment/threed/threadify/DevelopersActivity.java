@@ -5,21 +5,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 
-public class CashInActivity extends AppCompatActivity {
+public class DevelopersActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cash_in);
+        setContentView(R.layout.activity_developers);
 
         //Action Bar
         if (getSupportActionBar() != null) {
-//            getSupportActionBar().setDisplayShowHomeEnabled(true);
-//            getSupportActionBar().setLogo(R.drawable.ic_baseline_arrow_back_24);
-//            getSupportActionBar().setDisplayUseLogoEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
             getSupportActionBar().setDisplayShowTitleEnabled(false);

@@ -16,9 +16,8 @@ public class AboutActivity extends AppCompatActivity {
 
         //Action Bar
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setLogo(R.drawable.ic_baseline_arrow_back_24);
-            getSupportActionBar().setDisplayUseLogoEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
         //end of action bar
@@ -26,9 +25,8 @@ public class AboutActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
+        if (item.getItemId() == android.R.id.home) {
 
-        if (id == android.R.id.home){
             Intent intent = new Intent(this, MainMenuActivity.class);
             startActivity(intent);
             finish();
