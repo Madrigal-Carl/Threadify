@@ -1,5 +1,6 @@
 package org.mobileapplicationdevelopment.threed.threadify;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -45,6 +46,15 @@ public class RegisterActivity extends AppCompatActivity {
                 registerUser();
             }
         });
+    }
+
+    @SuppressWarnings("deprecation")
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     public void registerUser() {
