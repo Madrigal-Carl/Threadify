@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
@@ -66,9 +67,7 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
                 break;
 
             case R.id.buy_loadBtn:
-                Intent toBuyLoad = new Intent(MainMenuActivity.this, BuyLoadActivity.class);
-                startActivity(toBuyLoad);
-                finish();
+                Toast.makeText(this, "This feature is under development", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.pay_billsBtn:
