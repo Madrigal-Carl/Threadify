@@ -13,6 +13,7 @@
     <color name="buttonColor">#3243e0</color>
     <color name="link_color">#34cafb</color>
     <color name="background_color">#EAEFF3</color>
+    <color name="hinttxtcolor">#65FFFFFF</color>
     <color name="darkbtn">#131a30</color>
     <color name="text_color_dark">#424242</color>
 </resources>
