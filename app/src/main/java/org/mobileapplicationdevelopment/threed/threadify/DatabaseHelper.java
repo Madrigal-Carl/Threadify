@@ -16,27 +16,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "Threadify.db";
     private static final int DATABASE_VERSION = 1;
 
-//    USERS TABLE
+    // Define constants for the Users table
     private static final String TABLE_USERS = "Users";
     private static final String COLUMN_USER_ID = "user_id";
     private static final String COLUMN_FULLNAME = "fullname";
     private static final String COLUMN_USERNAME = "username";
     private static final String COLUMN_PASSWORD = "password";
 
-//    WALLETS TABLE
+    // Define constants for the Wallets table
     private static final String TABLE_WALLETS = "Wallets";
     private static final String COLUMN_WALLET_ID = "wallet_id";
     private static final String COLUMN_WALLET_USER_ID = "user_id";
     private static final String COLUMN_WALLET_BALANCE = "current_balance";
 
-//    TRANSACTION HISTORY
+    // Define constants for the Transaction History table
     private static final String TABLE_TRANSACTION_HISTORY = "Transaction_History";
     private static final String COLUMN_TRANSACTION_ID = "transaction_history_id";
     private static final String COLUMN_TRANSACTION_USER_ID = "user_id";
     private static final String COLUMN_TRANSACTION_TYPE = "transaction_type";
     private static final String COLUMN_TRANSACTION_AMOUNT = "transaction_amount";
     private static final String COLUMN_TRANSACTION_DATE = "transaction_date";
-
 
     public DatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -45,7 +44,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
+        // Create the Users table
         String userQuery = String.format(
                 "CREATE TABLE %s (" +
                         "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -56,6 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         );
         db.execSQL(userQuery);
 
+        // Create the Wallets table
         String walletQuery = String.format(
                 "CREATE TABLE %s (" +
                         "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -67,6 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         );
         db.execSQL(walletQuery);
 
+        // Create the Transaction History table
         String transactionHistoryQuery = String.format(
                 "CREATE TABLE %s (" +
                         "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -87,41 +88,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TRANSACTION_HISTORY);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_WALLETS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
-
         onCreate(db);
     }
 
+    // Add a new user and create their wallet
     public Boolean addUser(String fullname, String username, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("PRAGMA foreign_keys=ON;");
+        db.execSQL("PRAGMA foreign_keys=ON;"); // Enable foreign key constraints
         db.beginTransaction();
+
         try {
+            // Insert user data into the Users table
             ContentValues cv = new ContentValues();
             cv.put(COLUMN_FULLNAME, fullname);
             cv.put(COLUMN_USERNAME, username);
             cv.put(COLUMN_PASSWORD, password);
-
             long userResult = db.insert(TABLE_USERS, null, cv);
+
             if (userResult == -1) {
                 throw new SQLException(String.format("%s username is already taken", username));
             }
 
+            // Retrieve the user's ID to create their wallet
             Cursor cursor = db.query(TABLE_USERS, new String[]{COLUMN_USER_ID}, COLUMN_USERNAME + " = ?", new String[]{username}, null, null, null);
             if (cursor != null && cursor.moveToFirst()) {
                 long userId = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_USER_ID));
                 cursor.close();
 
+                // Insert wallet data into the Wallets table
                 ContentValues walletValues = new ContentValues();
                 walletValues.put(COLUMN_WALLET_USER_ID, userId);
                 walletValues.put(COLUMN_WALLET_BALANCE, 0.0);
                 long walletResult = db.insert(TABLE_WALLETS, null, walletValues);
+
                 if (walletResult == -1) {
                     throw new SQLException("Error creating wallet");
                 }
             }
 
             db.setTransactionSuccessful();
-            Toast.makeText(context, "Registration successful", Toast.LENGTH_SHORT).show();
             return true;
         } catch (SQLException e) {
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -132,6 +137,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return false;
     }
 
+    // Authenticate a user's login credentials
     public boolean userAuth(String username, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT u.user_id, u.fullname, u.username, w.current_balance " +
@@ -141,18 +147,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, new String[]{username, password});
 
         if (cursor.moveToFirst()) {
+            // Store user details in SharedPreferences upon successful login
             SharedPreferences pref = new SharedPreferences(context);
-
-            int userId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_USER_ID));
-            String fullname = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_FULLNAME));
-            String user_name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USERNAME));
-            String user_balance = cursor.getString(cursor.getColumnIndexOrThrow("current_balance"));
-
             pref.setLoginState(true);
-            pref.setUserId(userId);
-            pref.setUsername(user_name);
-            pref.setFullname(fullname);
-            pref.setBalance(user_balance);
+            pref.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_USER_ID)));
+            pref.setUsername(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USERNAME)));
+            pref.setFullname(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_FULLNAME)));
+            pref.setBalance(cursor.getString(cursor.getColumnIndexOrThrow("current_balance")));
 
             cursor.close();
             db.close();
@@ -164,6 +165,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return false;
     }
 
+    // Add balance to the logged-in user's wallet
     public void addBalance(int money) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("PRAGMA foreign_keys=ON;");
@@ -173,31 +175,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.beginTransaction();
         try {
-            String query = "SELECT " + COLUMN_WALLET_BALANCE +
-                    " FROM " + TABLE_WALLETS +
-                    " WHERE " + COLUMN_WALLET_USER_ID + " = ?";
+            // Fetch current wallet balance
+            String query = "SELECT " + COLUMN_WALLET_BALANCE + " FROM " + TABLE_WALLETS + " WHERE " + COLUMN_WALLET_USER_ID + " = ?";
             Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId)});
+
             if (cursor.moveToFirst()) {
                 double currentBalance = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_WALLET_BALANCE));
                 cursor.close();
 
+                // Update wallet balance
                 double newBalance = currentBalance + money;
-
                 ContentValues values = new ContentValues();
                 values.put(COLUMN_WALLET_BALANCE, newBalance);
-                int rowsAffected = db.update(TABLE_WALLETS, values, COLUMN_WALLET_USER_ID + " = ?", new String[]{String.valueOf(userId)});
+                db.update(TABLE_WALLETS, values, COLUMN_WALLET_USER_ID + " = ?", new String[]{String.valueOf(userId)});
 
-                if (rowsAffected > 0) {
-                    pref.setBalance(String.valueOf(newBalance));
-                    db.setTransactionSuccessful();
-
-                    Toast.makeText(context, "Balance updated successfully.", Toast.LENGTH_SHORT).show();
-                } else {
-                    throw new SQLException("Failed to update balance in the database.");
-                }
+                // Update balance in SharedPreferences
+                pref.setBalance(String.valueOf(newBalance));
+                db.setTransactionSuccessful();
             } else {
                 cursor.close();
-                throw new SQLException("User wallet not found in the database.");
+                throw new SQLException("User wallet not found.");
             }
         } catch (SQLException e) {
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -207,26 +204,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-
+    // Check if a username exists
     public boolean checkUser(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT u.user_id, u.fullname, u.username " +
-                "FROM Users u " +
-                "WHERE u.username = ?";
+        String query = "SELECT u.user_id FROM Users u WHERE u.username = ?";
         Cursor cursor = db.rawQuery(query, new String[]{username});
 
-        boolean userExists = false;
-
-        if (cursor.moveToFirst()) {
-            userExists = true;
-        }
-
+        boolean userExists = cursor.moveToFirst();
         cursor.close();
         db.close();
-
         return userExists;
     }
 
+    // Transfer money to another user
     public void sendCashToUser(String username, int money) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("PRAGMA foreign_keys=ON;");
@@ -236,10 +226,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.beginTransaction();
         try {
-            // Fetch sender's wallet balance
-            String senderQuery = "SELECT " + COLUMN_WALLET_BALANCE +
-                    " FROM " + TABLE_WALLETS +
-                    " WHERE " + COLUMN_WALLET_USER_ID + " = ?";
+            // Fetch sender's balance and validate transaction
+            String senderQuery = "SELECT " + COLUMN_WALLET_BALANCE + " FROM " + TABLE_WALLETS + " WHERE " + COLUMN_WALLET_USER_ID + " = ?";
             Cursor senderCursor = db.rawQuery(senderQuery, new String[]{String.valueOf(senderId)});
             if (!senderCursor.moveToFirst()) {
                 senderCursor.close();
@@ -248,43 +236,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             double senderBalance = senderCursor.getDouble(senderCursor.getColumnIndexOrThrow(COLUMN_WALLET_BALANCE));
             senderCursor.close();
 
+            if (senderBalance < money) throw new SQLException("Insufficient funds.");
+
             // Fetch recipient's wallet and user ID
             String recipientQuery = "SELECT w." + COLUMN_WALLET_BALANCE + ", u." + COLUMN_USER_ID +
-                    " FROM " + TABLE_USERS + " u" +
-                    " INNER JOIN " + TABLE_WALLETS + " w ON u." + COLUMN_USER_ID + " = w." + COLUMN_WALLET_USER_ID +
+                    " FROM " + TABLE_USERS + " u " +
+                    "INNER JOIN " + TABLE_WALLETS + " w ON u." + COLUMN_USER_ID + " = w." + COLUMN_WALLET_USER_ID +
                     " WHERE u." + COLUMN_USERNAME + " = ?";
             Cursor recipientCursor = db.rawQuery(recipientQuery, new String[]{username});
             if (!recipientCursor.moveToFirst()) {
                 recipientCursor.close();
-                throw new SQLException("Recipient wallet not found.");
+                throw new SQLException("Recipient not found.");
             }
             double recipientBalance = recipientCursor.getDouble(recipientCursor.getColumnIndexOrThrow(COLUMN_WALLET_BALANCE));
             int recipientId = recipientCursor.getInt(recipientCursor.getColumnIndexOrThrow(COLUMN_USER_ID));
             recipientCursor.close();
 
-            // Update sender's wallet
-            double newSenderBalance = senderBalance - money;
+            // Deduct money from sender
             ContentValues senderValues = new ContentValues();
-            senderValues.put(COLUMN_WALLET_BALANCE, newSenderBalance);
-            int senderUpdateCount = db.update(TABLE_WALLETS, senderValues, COLUMN_WALLET_USER_ID + " = ?", new String[]{String.valueOf(senderId)});
-            if (senderUpdateCount <= 0) {
-                throw new SQLException("Failed to update sender's wallet.");
-            }
+            senderValues.put(COLUMN_WALLET_BALANCE, senderBalance - money);
+            db.update(TABLE_WALLETS, senderValues, COLUMN_WALLET_USER_ID + " = ?", new String[]{String.valueOf(senderId)});
 
-            // Update recipient's wallet
-            double newRecipientBalance = recipientBalance + money;
+            // Add money to recipient
             ContentValues recipientValues = new ContentValues();
-            recipientValues.put(COLUMN_WALLET_BALANCE, newRecipientBalance);
-            int recipientUpdateCount = db.update(TABLE_WALLETS, recipientValues, COLUMN_WALLET_USER_ID + " = ?", new String[]{String.valueOf(recipientId)});
-            if (recipientUpdateCount <= 0) {
-                throw new SQLException("Failed to update recipient's wallet.");
-            }
+            recipientValues.put(COLUMN_WALLET_BALANCE, recipientBalance + money);
+            db.update(TABLE_WALLETS, recipientValues, COLUMN_WALLET_USER_ID + " = ?", new String[]{String.valueOf(recipientId)});
 
-            // Update sender's balance in SharedPreferences
-            pref.setBalance(String.valueOf(newSenderBalance));
+            // Update SharedPreferences with the new sender balance
+            pref.setBalance(String.valueOf(senderBalance - money));
 
             db.setTransactionSuccessful();
-            Toast.makeText(context, "Cash sent successfully!", Toast.LENGTH_SHORT).show();
         } catch (SQLException e) {
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
         } finally {
@@ -292,7 +273,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.close();
         }
     }
-
-
-
 }

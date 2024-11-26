@@ -17,6 +17,7 @@
         android:ems="10"
         android:hint="Recipient's Username"
         android:inputType="text"
+        android:maxLength="16"
         android:paddingStart="30dp"
         android:textAlignment="textStart"
         android:textColor="@color/text_color_dark"

@@ -10,6 +10,7 @@ import android.widget.Button;
 public class WelcomeBackActivity extends AppCompatActivity {
 
     Button startBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,6 +18,7 @@ public class WelcomeBackActivity extends AppCompatActivity {
 
         startBtn = findViewById(R.id.startBtn);
 
+        // Button to redirect the user to the main menu activity
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

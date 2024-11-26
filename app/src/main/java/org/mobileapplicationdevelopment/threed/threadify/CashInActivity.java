@@ -1,8 +1,11 @@
 package org.mobileapplicationdevelopment.threed.threadify;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,12 +20,13 @@ public class CashInActivity extends AppCompatActivity implements View.OnClickLis
     Button submit, add10, add20, add50, add100, add200, add500, add1000, add5000, add10000;
     EditText addInput;
     DatabaseHelper db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cash_in);
 
-        //Action Bar
+        // Set up the action bar (navigation bar)
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
@@ -30,6 +34,7 @@ public class CashInActivity extends AppCompatActivity implements View.OnClickLis
             getSupportActionBar().setDisplayShowTitleEnabled(true);
         }
 
+        // Finding views in the layout
         addInput = findViewById(R.id.addInput);
         submit = findViewById(R.id.submit);
         add10 = findViewById(R.id.add10);
@@ -42,7 +47,10 @@ public class CashInActivity extends AppCompatActivity implements View.OnClickLis
         add5000 = findViewById(R.id.add5000);
         add10000 = findViewById(R.id.add10000);
 
+        // Initialize database helper
         db = new DatabaseHelper(this);
+
+        // Set onClickListener for all buttons to trigger action when clicked
         submit.setOnClickListener(this);
         add10.setOnClickListener(this);
         add20.setOnClickListener(this);
@@ -55,6 +63,7 @@ public class CashInActivity extends AppCompatActivity implements View.OnClickLis
         add10000.setOnClickListener(this);
     }
 
+    // Handle item selection from the options menu (back button in the action bar)
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -65,6 +74,7 @@ public class CashInActivity extends AppCompatActivity implements View.OnClickLis
         return super.onOptionsItemSelected(item);
     }
 
+    // Helper method to update the input field with the selected money amount
     public void changeInputText(int money){
         int sum = 0;
         if (!addInput.getText().toString().isEmpty()) {
@@ -72,13 +82,14 @@ public class CashInActivity extends AppCompatActivity implements View.OnClickLis
         } else {
             sum = 0;
         }
-
         addInput.setText("" + (sum + money));
     }
 
+    // Handle button clicks to update the input field with predefined amounts
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            // Add respective amounts to the input field
             case R.id.add10:
                 changeInputText(10);
                 break;
@@ -115,6 +126,7 @@ public class CashInActivity extends AppCompatActivity implements View.OnClickLis
                 changeInputText(10000);
                 break;
 
+            // Submit button to finalize the cash-in process
             case R.id.submit:
                 if (!addInput.getText().toString().isEmpty()) {
                     cashIn(Integer.parseInt(addInput.getText().toString()));
@@ -128,18 +140,35 @@ public class CashInActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    // Method to handle cash-in operation and update the database
     public void cashIn(int money) {
         if (money <= 0) {
             return;
         }
 
+        // Update the user's balance in the database
         db.addBalance(money);
-        Toast.makeText(this, "Cash-in successful! Added PHP " + money, Toast.LENGTH_SHORT).show();
 
+        // Display an alert dialog showing the success message and amount added
+        AlertDialog alert = new AlertDialog.Builder(this)
+                .setMessage("Cash-in successful! Added PHP " + money)
+                .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent toLogin = new Intent(CashInActivity.this, MainMenuActivity.class);
+                        startActivity(toLogin);
+                        finish();
+                    }
+                }).show();
+    }
+
+    @SuppressWarnings("deprecation")
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
+        // Navigate back to the main menu activity when the back button is pressed
         Intent intent = new Intent(this, MainMenuActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
     }
-
 }

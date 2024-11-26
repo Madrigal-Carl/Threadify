@@ -15,19 +15,18 @@ public class TransactionHistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_transaction_history);
 
 
-        //Action Bar
+        // Setting up the action bar with back button
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
-        //end of action bar
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // Navigate back to MainMenuActivity when back button is pressed
         if (item.getItemId() == android.R.id.home) {
-
             Intent intent = new Intent(this, MainMenuActivity.class);
             startActivity(intent);
             finish();

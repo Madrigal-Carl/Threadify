@@ -1,6 +1,7 @@
 package org.mobileapplicationdevelopment.threed.threadify;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -23,23 +25,18 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        //Action Bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setLogo(R.drawable.ic_baseline_arrow_back_24);
-            getSupportActionBar().setDisplayUseLogoEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-        }
-        //end of action bar
-
+        // Finding views in the layout
         login = findViewById(R.id.loginBtn);
         fullname = findViewById(R.id.fullnameRegisterFld);
         username = findViewById(R.id.usernameRegisterFld);
         password = findViewById(R.id.passwordRegisterFld);
         confirm_password = findViewById(R.id.confirmpasswordRegisterFld);
         register = findViewById(R.id.registerBtn);
+
+        // Initialize database helper
         db = new DatabaseHelper(this);
 
+        // Login button to redirect the user to the login activity
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -49,6 +46,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        // Register button to trigger the registration process
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,17 +64,60 @@ public class RegisterActivity extends AppCompatActivity {
         finish();
     }
 
+    // Registering new user
     public void registerUser() {
-        String full_name = fullname.getText().toString();
+        String full_name = fullname.getText().toString().trim();
         String user_name = username.getText().toString().trim();
         String user_password = password.getText().toString().trim();
         String confirm_pass = confirm_password.getText().toString().trim();
 
-        if (full_name.isEmpty() || user_name.isEmpty() || user_password.isEmpty() || confirm_pass.isEmpty()){
-            Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
+        // Check for empty fields
+        if (full_name.isEmpty() && user_name.isEmpty() && user_password.isEmpty()) {
+            fullname.setError("Input your full name");
+            username.setError("Input your username");
+            password.setError("Input your password");
+            return;
+        } else if (full_name.isEmpty() && user_name.isEmpty()) {
+            fullname.setError("Input your full name");
+            username.setError("Input your username");
+            return;
+        } else if (full_name.isEmpty() && user_password.isEmpty()) {
+            fullname.setError("Input your full name");
+            password.setError("Input your password");
+            return;
+        } else if (user_name.isEmpty() && user_password.isEmpty()) {
+            username.setError("Input your username");
+            password.setError("Input your password");
+            return;
+        } else if (full_name.isEmpty()) {
+            fullname.setError("Input your full name");
+            return;
+        } else if (user_name.isEmpty()) {
+            username.setError("Input your username");
+            return;
+        } else if (user_password.isEmpty()) {
+            password.setError("Input your password");
             return;
         }
 
+        // Validate username and password length and spaces
+        if (user_name.length() < 8) {
+            username.setError("Username must be at least 8 characters");
+            return;
+        } else if (user_name.contains(" ")) {
+            username.setError("Username must not contain spaces");
+            return;
+        }
+
+        if (user_password.length() < 8) {
+            password.setError("Password must be at least 8 characters");
+            return;
+        } else if (user_password.contains(" ")) {
+            password.setError("Password must not contain spaces");
+            return;
+        }
+
+        // Check if passwords match
         if (!user_password.equals(confirm_pass)) {
             Toast.makeText(this, "Passwords do not match. Please re-enter.", Toast.LENGTH_SHORT).show();
             password.setText("");
@@ -84,14 +125,19 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-
-        if (db.addUser(full_name, user_name, user_password)){
-            Intent toLogin = new Intent(RegisterActivity.this, LoginActivity.class);
-            startActivity(toLogin);
-            finish();
+        // Add user to database
+        if (db.addUser(full_name, user_name, user_password)) {
+            AlertDialog alert = new AlertDialog.Builder(this)
+                    .setMessage("Your account is now ready.")
+                    .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Intent toLogin = new Intent(RegisterActivity.this, LoginActivity.class);
+                            startActivity(toLogin);
+                            finish();
+                        }
+                    }).show();
         }
-
-
-
     }
+
 }
