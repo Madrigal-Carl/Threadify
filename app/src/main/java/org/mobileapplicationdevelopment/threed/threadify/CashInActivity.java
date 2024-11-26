@@ -26,7 +26,8 @@ public class CashInActivity extends AppCompatActivity implements View.OnClickLis
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setTitle("Cash In");
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
         }
 
         addInput = findViewById(R.id.addInput);

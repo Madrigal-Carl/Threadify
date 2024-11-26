@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <solid android:color="@color/darkbtn"/>
-    <corners android:radius="300dp"/>
+    <!-- Pressed State -->
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#929AB6"/> <!-- Replace with your pressed color -->
+            <corners android:radius="300dp"/>
+        </shape>
+    </item>
 
-</shape>
+    <!-- Default State -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/darkbtn"/> <!-- Default color -->
+            <corners android:radius="300dp"/>
+        </shape>
+    </item>
+
+</selector>

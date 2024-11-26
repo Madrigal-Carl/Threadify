@@ -26,7 +26,8 @@ public class SendCashActivity extends AppCompatActivity implements View.OnClickL
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setTitle("Send Money");
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
         }
 
         receiver = findViewById(R.id.receiver);
