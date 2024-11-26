@@ -190,13 +190,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 if (rowsAffected > 0) {
                     pref.setBalance(String.valueOf(newBalance));
                     db.setTransactionSuccessful();
-                    Toast.makeText(context, "Invalid amount. Please enter a value.", Toast.LENGTH_SHORT).show();
+
+                    Toast.makeText(context, "Balance updated successfully.", Toast.LENGTH_SHORT).show();
                 } else {
-                    throw new SQLException("Failed to update balance.");
+                    throw new SQLException("Failed to update balance in the database.");
                 }
             } else {
                 cursor.close();
-                throw new SQLException("User wallet not found.");
+                throw new SQLException("User wallet not found in the database.");
             }
         } catch (SQLException e) {
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -205,4 +206,93 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.close();
         }
     }
+
+
+    public boolean checkUser(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT u.user_id, u.fullname, u.username " +
+                "FROM Users u " +
+                "WHERE u.username = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{username});
+
+        boolean userExists = false;
+
+        if (cursor.moveToFirst()) {
+            userExists = true;
+        }
+
+        cursor.close();
+        db.close();
+
+        return userExists;
+    }
+
+    public void sendCashToUser(String username, int money) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("PRAGMA foreign_keys=ON;");
+
+        SharedPreferences pref = new SharedPreferences(context);
+        int senderId = pref.getUserId();
+
+        db.beginTransaction();
+        try {
+            // Fetch sender's wallet balance
+            String senderQuery = "SELECT " + COLUMN_WALLET_BALANCE +
+                    " FROM " + TABLE_WALLETS +
+                    " WHERE " + COLUMN_WALLET_USER_ID + " = ?";
+            Cursor senderCursor = db.rawQuery(senderQuery, new String[]{String.valueOf(senderId)});
+            if (!senderCursor.moveToFirst()) {
+                senderCursor.close();
+                throw new SQLException("Sender wallet not found.");
+            }
+            double senderBalance = senderCursor.getDouble(senderCursor.getColumnIndexOrThrow(COLUMN_WALLET_BALANCE));
+            senderCursor.close();
+
+            // Fetch recipient's wallet and user ID
+            String recipientQuery = "SELECT w." + COLUMN_WALLET_BALANCE + ", u." + COLUMN_USER_ID +
+                    " FROM " + TABLE_USERS + " u" +
+                    " INNER JOIN " + TABLE_WALLETS + " w ON u." + COLUMN_USER_ID + " = w." + COLUMN_WALLET_USER_ID +
+                    " WHERE u." + COLUMN_USERNAME + " = ?";
+            Cursor recipientCursor = db.rawQuery(recipientQuery, new String[]{username});
+            if (!recipientCursor.moveToFirst()) {
+                recipientCursor.close();
+                throw new SQLException("Recipient wallet not found.");
+            }
+            double recipientBalance = recipientCursor.getDouble(recipientCursor.getColumnIndexOrThrow(COLUMN_WALLET_BALANCE));
+            int recipientId = recipientCursor.getInt(recipientCursor.getColumnIndexOrThrow(COLUMN_USER_ID));
+            recipientCursor.close();
+
+            // Update sender's wallet
+            double newSenderBalance = senderBalance - money;
+            ContentValues senderValues = new ContentValues();
+            senderValues.put(COLUMN_WALLET_BALANCE, newSenderBalance);
+            int senderUpdateCount = db.update(TABLE_WALLETS, senderValues, COLUMN_WALLET_USER_ID + " = ?", new String[]{String.valueOf(senderId)});
+            if (senderUpdateCount <= 0) {
+                throw new SQLException("Failed to update sender's wallet.");
+            }
+
+            // Update recipient's wallet
+            double newRecipientBalance = recipientBalance + money;
+            ContentValues recipientValues = new ContentValues();
+            recipientValues.put(COLUMN_WALLET_BALANCE, newRecipientBalance);
+            int recipientUpdateCount = db.update(TABLE_WALLETS, recipientValues, COLUMN_WALLET_USER_ID + " = ?", new String[]{String.valueOf(recipientId)});
+            if (recipientUpdateCount <= 0) {
+                throw new SQLException("Failed to update recipient's wallet.");
+            }
+
+            // Update sender's balance in SharedPreferences
+            pref.setBalance(String.valueOf(newSenderBalance));
+
+            db.setTransactionSuccessful();
+            Toast.makeText(context, "Cash sent successfully!", Toast.LENGTH_SHORT).show();
+        } catch (SQLException e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
+
+
 }

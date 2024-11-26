@@ -6,10 +6,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -61,7 +59,7 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
                 break;
 
             case R.id.cash_outBtn:
-                Intent toCashOut = new Intent(MainMenuActivity.this, CashOutActivity.class);
+                Intent toCashOut = new Intent(MainMenuActivity.this, SendCashActivity.class);
                 startActivity(toCashOut);
                 finish();
                 break;
@@ -112,6 +110,13 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
 
         if (id == R.id.developers_id) {
             Intent intent = new Intent(this, DevelopersActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+        if (id == R.id.log_out_id) {
+            pref.clearPreferences();
+            Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
         }

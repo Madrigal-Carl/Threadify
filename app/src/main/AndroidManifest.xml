@@ -56,7 +56,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".CashOutActivity"
+            android:name=".SendCashActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

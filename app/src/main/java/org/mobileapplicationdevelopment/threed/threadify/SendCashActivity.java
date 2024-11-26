@@ -5,22 +5,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class CashInActivity extends AppCompatActivity implements View.OnClickListener{
+public class SendCashActivity extends AppCompatActivity implements View.OnClickListener{
 
     Button submit, add10, add20, add50, add100, add200, add500, add1000, add5000, add10000;
-    EditText addInput;
+    EditText addInput, receiver;
     DatabaseHelper db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cash_in);
+        setContentView(R.layout.activity_send_cash);
 
         //Action Bar
         if (getSupportActionBar() != null) {
@@ -29,6 +29,7 @@ public class CashInActivity extends AppCompatActivity implements View.OnClickLis
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
+        receiver = findViewById(R.id.receiver);
         addInput = findViewById(R.id.addInput);
         submit = findViewById(R.id.submit);
         add10 = findViewById(R.id.add10);
@@ -57,6 +58,7 @@ public class CashInActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
+
             Intent intent = new Intent(this, MainMenuActivity.class);
             startActivity(intent);
             finish();
@@ -116,9 +118,9 @@ public class CashInActivity extends AppCompatActivity implements View.OnClickLis
 
             case R.id.submit:
                 if (!addInput.getText().toString().isEmpty()) {
-                    cashIn(Integer.parseInt(addInput.getText().toString()));
+                    sendCash(Integer.parseInt(addInput.getText().toString()));
                 } else {
-                    cashIn(0);
+                    sendCash(0);
                 }
                 break;
 
@@ -127,18 +129,27 @@ public class CashInActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    public void cashIn(int money) {
+    public void sendCash(int money) {
+        SharedPreferences pref = new SharedPreferences(this);
+
         if (money <= 0) {
+            Toast.makeText(this, "Enter a valid amount.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        db.addBalance(money);
-        Toast.makeText(this, "Cash-in successful! Added PHP " + money, Toast.LENGTH_SHORT).show();
+        if (money > Double.parseDouble(pref.getBalance())) {
+            Toast.makeText(this, "Insufficient balance.", Toast.LENGTH_SHORT).show();
+            addInput.setText("");
+            return;
+        }
 
-        Intent intent = new Intent(this, MainMenuActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
+        String recipientUsername = receiver.getText().toString().trim();
+        if (recipientUsername.isEmpty() || !db.checkUser(recipientUsername)) {
+            Toast.makeText(this, "Username not found.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        db.sendCashToUser(recipientUsername, money);
     }
 
 }

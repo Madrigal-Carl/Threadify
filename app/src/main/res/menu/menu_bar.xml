@@ -14,4 +14,8 @@
     <item
         android:id="@+id/developers_id"
         android:title="Developers" />
+
+    <item
+        android:id="@+id/log_out_id"
+        android:title="Log out" />
 </menu>
