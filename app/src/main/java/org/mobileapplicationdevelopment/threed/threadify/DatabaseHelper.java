@@ -163,4 +163,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return false;
     }
+
+    public void addBalance(int money) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("PRAGMA foreign_keys=ON;");
+
+        SharedPreferences pref = new SharedPreferences(context);
+        int userId = pref.getUserId();
+
+        db.beginTransaction();
+        try {
+            String query = "SELECT " + COLUMN_WALLET_BALANCE +
+                    " FROM " + TABLE_WALLETS +
+                    " WHERE " + COLUMN_WALLET_USER_ID + " = ?";
+            Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId)});
+            if (cursor.moveToFirst()) {
+                double currentBalance = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_WALLET_BALANCE));
+                cursor.close();
+
+                double newBalance = currentBalance + money;
+
+                ContentValues values = new ContentValues();
+                values.put(COLUMN_WALLET_BALANCE, newBalance);
+                int rowsAffected = db.update(TABLE_WALLETS, values, COLUMN_WALLET_USER_ID + " = ?", new String[]{String.valueOf(userId)});
+
+                if (rowsAffected > 0) {
+                    pref.setBalance(String.valueOf(newBalance));
+                    db.setTransactionSuccessful();
+                    Toast.makeText(context, "Invalid amount. Please enter a value.", Toast.LENGTH_SHORT).show();
+                } else {
+                    throw new SQLException("Failed to update balance.");
+                }
+            } else {
+                cursor.close();
+                throw new SQLException("User wallet not found.");
+            }
+        } catch (SQLException e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
 }
