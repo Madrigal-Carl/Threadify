@@ -2,6 +2,8 @@ package org.mobileapplicationdevelopment.threed.threadify;
 
 import android.content.Context;
 
+import java.text.DecimalFormat;
+
 public class SharedPreferences {
     private static final String PREF_NAME = "ThreadifyPrefs";
 
@@ -9,6 +11,7 @@ public class SharedPreferences {
     private static final String KEY_FULLNAME = "fullname";
     private static final String KEY_USERNAME = "username";
     private static final String KEY_USER_ID = "userId";
+    private static final String KEY_USER_BALANCE = "0.0";
 
     private android.content.SharedPreferences sharedPreferences;
     private android.content.SharedPreferences.Editor editor;
@@ -52,6 +55,23 @@ public class SharedPreferences {
 
     public String getUsername() {
         return sharedPreferences.getString(KEY_USERNAME, "User123");
+    }
+
+    public void setBalance(String wallet) {
+        editor.putString(KEY_USER_BALANCE, wallet);
+        editor.apply();
+    }
+
+    public String getBalance() {
+        String rawBalance = sharedPreferences.getString(KEY_USER_BALANCE, "0.0");
+
+        try {
+            double balance = Double.parseDouble(rawBalance);
+            DecimalFormat df = new DecimalFormat("0.00");
+            return df.format(balance);
+        } catch (NumberFormatException e) {
+            return "0.00";
+        }
     }
 
     public void clearPreferences() {

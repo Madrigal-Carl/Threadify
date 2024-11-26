@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import java.sql.SQLException;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
     private Context context;
     private static final String DATABASE_NAME = "Threadify.db";
@@ -91,86 +93,66 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Boolean addUser(String fullname, String username, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("PRAGMA foreign_keys=ON;");
+        db.beginTransaction();
+        try {
+            ContentValues cv = new ContentValues();
+            cv.put(COLUMN_FULLNAME, fullname);
+            cv.put(COLUMN_USERNAME, username);
+            cv.put(COLUMN_PASSWORD, password);
 
-        ContentValues cv = new ContentValues();
-        cv.put(COLUMN_FULLNAME, fullname);
-        cv.put(COLUMN_USERNAME, username);
-        cv.put(COLUMN_PASSWORD, password);
-        long result = db.insert(TABLE_USERS, null, cv);
-
-        if (result == -1) {
-
-            Toast.makeText(context, String.format("%s username is already taken", username), Toast.LENGTH_SHORT).show();
-            db.close();
-            return false;
-        } else {
+            long userResult = db.insert(TABLE_USERS, null, cv);
+            if (userResult == -1) {
+                throw new SQLException(String.format("%s username is already taken", username));
+            }
 
             Cursor cursor = db.query(TABLE_USERS, new String[]{COLUMN_USER_ID}, COLUMN_USERNAME + " = ?", new String[]{username}, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                long userId = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_USER_ID));
+                cursor.close();
 
-            if (cursor != null) {
-                if (cursor.moveToFirst()) {
-                    int userIdColumnIndex = cursor.getColumnIndex(COLUMN_USER_ID);
-                    if (userIdColumnIndex != -1) {
-                        long userId = cursor.getLong(userIdColumnIndex);
-
-                        ContentValues walletValues = new ContentValues();
-                        walletValues.put(COLUMN_WALLET_USER_ID, userId);
-                        walletValues.put(COLUMN_WALLET_BALANCE, 0.0);
-
-                        long walletResult = db.insert(TABLE_WALLETS, null, walletValues);
-
-                        if (walletResult == -1) {
-                            Toast.makeText(context, "Error creating wallet", Toast.LENGTH_SHORT).show();
-                            db.close();
-                            return false;
-                        } else {
-                            Toast.makeText(context, "Registration successful", Toast.LENGTH_SHORT).show();
-                            db.close();
-                            return true;
-                        }
-                    } else {
-                        Toast.makeText(context, "User ID column not found", Toast.LENGTH_SHORT).show();
-                        db.close();
-                        return false;
-                    }
-                } else {
-                    Toast.makeText(context, "Error fetching user data", Toast.LENGTH_SHORT).show();
-                    db.close();
-                    return false;
+                ContentValues walletValues = new ContentValues();
+                walletValues.put(COLUMN_WALLET_USER_ID, userId);
+                walletValues.put(COLUMN_WALLET_BALANCE, 0.0);
+                long walletResult = db.insert(TABLE_WALLETS, null, walletValues);
+                if (walletResult == -1) {
+                    throw new SQLException("Error creating wallet");
                 }
-            } else {
-                Toast.makeText(context, "Error executing query", Toast.LENGTH_SHORT).show();
-                db.close();
-                return false;
             }
+
+            db.setTransactionSuccessful();
+            Toast.makeText(context, "Registration successful", Toast.LENGTH_SHORT).show();
+            return true;
+        } catch (SQLException e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+        } finally {
+            db.endTransaction();
+            db.close();
         }
+        return false;
     }
 
     public boolean userAuth(String username, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
-        SharedPreferences pref = new SharedPreferences(context);
-
-        String selection = String.format("%s = ? AND %s = ?", COLUMN_USERNAME, COLUMN_PASSWORD);
-        String[] selectionArgs = {username, password};
-
-        Cursor cursor = db.query(
-                TABLE_USERS,
-                new String[]{COLUMN_USER_ID, COLUMN_FULLNAME, COLUMN_USERNAME},
-                selection, selectionArgs,
-                null,
-                null,
-                null);
+        String query = "SELECT u.user_id, u.fullname, u.username, w.current_balance " +
+                "FROM Users u " +
+                "INNER JOIN Wallets w ON u.user_id = w.user_id " +
+                "WHERE u.username = ? AND u.password = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{username, password});
 
         if (cursor.moveToFirst()) {
+            SharedPreferences pref = new SharedPreferences(context);
 
             int userId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_USER_ID));
             String fullname = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_FULLNAME));
             String user_name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USERNAME));
+            String user_balance = cursor.getString(cursor.getColumnIndexOrThrow("current_balance"));
 
             pref.setLoginState(true);
             pref.setUserId(userId);
             pref.setUsername(user_name);
             pref.setFullname(fullname);
+            pref.setBalance(user_balance);
 
             cursor.close();
             db.close();

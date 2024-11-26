@@ -17,13 +17,13 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainMenuActivity extends AppCompatActivity implements View.OnClickListener {
     TextView current_balance;
     Button cash_in, cash_out, buy_load, pay_bills, transaction_history;
-
-
+    SharedPreferences pref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
+        pref = new SharedPreferences(this);
 
         //Action Bar
         if (getSupportActionBar() != null) {
@@ -33,8 +33,6 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
             getSupportActionBar().setTitle("   Threadify");
             getSupportActionBar().setDisplayShowTitleEnabled(true);
         }
-        //end of action bar
-
 
         current_balance = findViewById(R.id.current_balanceView);
         cash_in = findViewById(R.id.cash_inBtn);
@@ -42,6 +40,8 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         buy_load = findViewById(R.id.buy_loadBtn);
         pay_bills = findViewById(R.id.pay_billsBtn);
         transaction_history = findViewById(R.id.transaction_historyBtn);
+
+        current_balance.setText("PHP " + pref.getBalance());
 
         cash_in.setOnClickListener(this);
         cash_out.setOnClickListener(this);
