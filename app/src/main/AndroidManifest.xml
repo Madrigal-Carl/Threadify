@@ -49,13 +49,6 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".PayBillsActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
             android:name=".SendCashActivity"
             android:exported="false">
             <meta-data

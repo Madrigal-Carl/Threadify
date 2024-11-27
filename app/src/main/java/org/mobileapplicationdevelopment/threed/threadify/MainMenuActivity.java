@@ -17,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainMenuActivity extends AppCompatActivity implements View.OnClickListener {
 
     TextView current_balance;
-    Button cash_in, cash_out, buy_load, pay_bills, transaction_history;
+    Button cash_in, cash_out, buy_load, transaction_history;
     SharedPreferences pref;
 
     @Override
@@ -42,7 +42,6 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         cash_in = findViewById(R.id.cash_inBtn);
         cash_out = findViewById(R.id.cash_outBtn);
         buy_load = findViewById(R.id.buy_loadBtn);
-        pay_bills = findViewById(R.id.pay_billsBtn);
         transaction_history = findViewById(R.id.transaction_historyBtn);
 
         // Set current balance from shared preferences
@@ -52,7 +51,6 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         cash_in.setOnClickListener(this);
         cash_out.setOnClickListener(this);
         buy_load.setOnClickListener(this);
-        pay_bills.setOnClickListener(this);
         transaction_history.setOnClickListener(this);
     }
 
@@ -80,10 +78,8 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
                 break;
 
             case R.id.pay_billsBtn:
-                // Navigate to the PayBillsActivity
-                Intent toPayBills = new Intent(MainMenuActivity.this, PayBillsActivity.class);
-                startActivity(toPayBills);
-                finish();
+                // Notify the user that this feature is under development
+                Toast.makeText(this, "This feature is under development", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.transaction_historyBtn:

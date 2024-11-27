@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.concurrent.Executors;
+
 public class SendCashActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button submit, add10, add20, add50, add100, add200, add500, add1000, add5000, add10000;
@@ -146,51 +148,59 @@ public class SendCashActivity extends AppCompatActivity implements View.OnClickL
 
         // Validate the recipient username
         String recipientUsername = receiver.getText().toString().trim();
-        if (recipientUsername.isEmpty() || !db.checkUser(recipientUsername)) {
-            Toast.makeText(this, "Username not found.", Toast.LENGTH_SHORT).show();
+        if (recipientUsername.isEmpty()) {
+            Toast.makeText(this, "Recipient username cannot be empty.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!db.checkUser(recipientUsername)) {
+            Toast.makeText(this, "Recipient username not found.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         // Show a confirmation dialog
-        AlertDialog confirmDialog = new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this)
                 .setMessage("Are you sure you want to transfer " + money + " to " + recipientUsername + "?")
-                .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
+                .setPositiveButton("Continue", (dialogInterface, i) -> {
+                    dialogInterface.dismiss();
 
-                        AlertDialog progressDialog = new AlertDialog.Builder(SendCashActivity.this)
-                                .setMessage("Processing transaction, please wait...")
-                                .setCancelable(false) // Prevent user dismissal
-                                .show();
+                    // Show a progress dialog while processing
+                    AlertDialog progressDialog = new AlertDialog.Builder(SendCashActivity.this)
+                            .setMessage("Processing transaction, please wait...")
+                            .setCancelable(false)
+                            .show();
 
-                        // Delay for 3 seconds and then show the success dialog
-                        new android.os.Handler().postDelayed(() -> {
-                            progressDialog.dismiss();
+                    // Use a background thread for database operations
+                    Executors.newSingleThreadExecutor().execute(() -> {
+                        try {
+                            // Execute the transaction
+                            db.sendCashToUser(recipientUsername, money);
 
-                            // Show success message
-                            AlertDialog successDialog = new AlertDialog.Builder(SendCashActivity.this)
-                                    .setMessage("Successfully transferred money!")
-                                    .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
+                            // Update the UI on the main thread
+                            runOnUiThread(() -> {
+                                progressDialog.dismiss();
+
+                                // Show success dialog
+                                new AlertDialog.Builder(SendCashActivity.this)
+                                        .setMessage("Successfully transferred money!")
+                                        .setPositiveButton("Proceed", (successDialog, successI) -> {
                                             // Navigate to the main menu
                                             Intent toMainMenu = new Intent(SendCashActivity.this, MainMenuActivity.class);
                                             startActivity(toMainMenu);
                                             finish();
-                                        }
-                                    })
-                                    .setCancelable(false)
-                                    .show();
-                        }, 3000);
-                    }
+                                        })
+                                        .setCancelable(false)
+                                        .show();
+                            });
+                        } catch (Exception e) {
+                            // Handle errors and update UI
+                            runOnUiThread(() -> {
+                                progressDialog.dismiss();
+                                Toast.makeText(SendCashActivity.this, "Transaction failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            });
+                        }
+                    });
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                })
+                .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss())
                 .setCancelable(false)
                 .show();
     }

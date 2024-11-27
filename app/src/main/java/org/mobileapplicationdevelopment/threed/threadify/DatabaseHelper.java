@@ -72,9 +72,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "CREATE TABLE %s (" +
                         "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         "%s INTEGER NOT NULL, " +
-                        "%s TEXT CHECK(%s IN ('send money', 'receive money', 'buy load')) NOT NULL, " +
+                        "%s TEXT CHECK(%s IN ('Send Money', 'Receive Money', 'buy load')) NOT NULL, " +
                         "%s REAL NOT NULL, " +
-                        "%s DATETIME DEFAULT CURRENT_TIMESTAMP, " +
+                        "%s DATE DEFAULT (CURRENT_DATE), " +
                         "FOREIGN KEY(%s) REFERENCES %s(%s) ON DELETE CASCADE)",
                 TABLE_TRANSACTION_HISTORY, COLUMN_TRANSACTION_ID, COLUMN_TRANSACTION_USER_ID,
                 COLUMN_TRANSACTION_TYPE, COLUMN_TRANSACTION_TYPE, COLUMN_TRANSACTION_AMOUNT,
@@ -185,9 +185,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 // Update wallet balance
                 double newBalance = currentBalance + money;
-                ContentValues values = new ContentValues();
-                values.put(COLUMN_WALLET_BALANCE, newBalance);
-                db.update(TABLE_WALLETS, values, COLUMN_WALLET_USER_ID + " = ?", new String[]{String.valueOf(userId)});
+                ContentValues walletValues = new ContentValues();
+                walletValues.put(COLUMN_WALLET_BALANCE, newBalance);
+                db.update(TABLE_WALLETS, walletValues, COLUMN_WALLET_USER_ID + " = ?", new String[]{String.valueOf(userId)});
+
+                // Insert transaction into the Transaction History table
+                ContentValues transactionValues = new ContentValues();
+                transactionValues.put(COLUMN_TRANSACTION_USER_ID, userId);
+                transactionValues.put(COLUMN_TRANSACTION_TYPE, "Receive Money");
+                transactionValues.put(COLUMN_TRANSACTION_AMOUNT, money);
+                db.insert(TABLE_TRANSACTION_HISTORY, null, transactionValues);
 
                 // Update balance in SharedPreferences
                 pref.setBalance(String.valueOf(newBalance));
@@ -203,6 +210,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.close();
         }
     }
+
 
     // Check if a username exists
     public boolean checkUser(String username) {
@@ -262,6 +270,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             recipientValues.put(COLUMN_WALLET_BALANCE, recipientBalance + money);
             db.update(TABLE_WALLETS, recipientValues, COLUMN_WALLET_USER_ID + " = ?", new String[]{String.valueOf(recipientId)});
 
+            // Insert sender's transaction history
+            ContentValues senderTransaction = new ContentValues();
+            senderTransaction.put(COLUMN_TRANSACTION_USER_ID, senderId);
+            senderTransaction.put(COLUMN_TRANSACTION_TYPE, "Send Money");
+            senderTransaction.put(COLUMN_TRANSACTION_AMOUNT, money);
+            db.insert(TABLE_TRANSACTION_HISTORY, null, senderTransaction);
+
+            // Insert recipient's transaction history
+            ContentValues recipientTransaction = new ContentValues();
+            recipientTransaction.put(COLUMN_TRANSACTION_USER_ID, recipientId);
+            recipientTransaction.put(COLUMN_TRANSACTION_TYPE, "Receive Money");
+            recipientTransaction.put(COLUMN_TRANSACTION_AMOUNT, money);
+            db.insert(TABLE_TRANSACTION_HISTORY, null, recipientTransaction);
+
             // Update SharedPreferences with the new sender balance
             pref.setBalance(String.valueOf(senderBalance - money));
 
@@ -273,4 +295,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.close();
         }
     }
+
+
+    public Cursor getAllTransactionHistory() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        SharedPreferences pref = new SharedPreferences(context);
+        int userId = pref.getUserId(); // Get the logged-in user's ID
+
+        String query = "SELECT * FROM " + TABLE_TRANSACTION_HISTORY + " WHERE " + COLUMN_TRANSACTION_USER_ID + " = ?";
+        return db.rawQuery(query, new String[]{String.valueOf(userId)});
+    }
+
 }

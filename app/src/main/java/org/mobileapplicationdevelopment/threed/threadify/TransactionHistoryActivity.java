@@ -2,18 +2,29 @@ package org.mobileapplicationdevelopment.threed.threadify;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class TransactionHistoryActivity extends AppCompatActivity {
+
+    RecyclerView recyclerView;
+    DatabaseHelper db;
+    ArrayList<String> transaction_amount, transaction_type, transaction_date;
+    CustomAdapter customAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_history);
-
 
         // Setting up the action bar with back button
         if (getSupportActionBar() != null) {
@@ -21,6 +32,44 @@ public class TransactionHistoryActivity extends AppCompatActivity {
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
+
+        db = new DatabaseHelper(this);
+        recyclerView = findViewById(R.id.recyclerView);
+
+        transaction_amount = new ArrayList<>();
+        transaction_type = new ArrayList<>();
+        transaction_date = new ArrayList<>();
+
+        storeTransactionHistory();
+        reverseListOrder();
+
+        customAdapter = new CustomAdapter(TransactionHistoryActivity.this, this, transaction_amount, transaction_type, transaction_date);
+        recyclerView.setAdapter(customAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    public void storeTransactionHistory() {
+        // Fetch transaction history from the database
+        Cursor cursor = db.getAllTransactionHistory();
+        if (cursor.getCount() == 0) {
+            Toast.makeText(this, "No transactions found", Toast.LENGTH_SHORT).show();
+        } else {
+            while (cursor.moveToNext()) {
+                // Add data to respective ArrayLists
+                transaction_amount.add(cursor.getString(cursor.getColumnIndexOrThrow("transaction_amount")));
+                transaction_type.add(cursor.getString(cursor.getColumnIndexOrThrow("transaction_type")));
+                transaction_date.add(cursor.getString(cursor.getColumnIndexOrThrow("transaction_date")));
+            }
+        }
+        cursor.close();
+    }
+
+    // Reverse the lists to show the latest transactions first
+    private void reverseListOrder() {
+        // Reverse all the lists to show the latest first
+        Collections.reverse(transaction_amount);
+        Collections.reverse(transaction_type);
+        Collections.reverse(transaction_date);
     }
 
     @Override
