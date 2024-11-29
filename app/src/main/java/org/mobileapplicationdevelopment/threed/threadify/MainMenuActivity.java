@@ -106,9 +106,9 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         // Handle action bar item clicks
         int id = item.getItemId();
 
-        if (id == R.id.profile_id) {
+        if (id == R.id.account_setting_id) {
             // Navigate to ProfileActivity
-            Intent intent = new Intent(this, ProfileActivity.class);
+            Intent intent = new Intent(this, AccountSettingActivity.class);
             startActivity(intent);
             finish();
         } else if (id == R.id.about_id) {

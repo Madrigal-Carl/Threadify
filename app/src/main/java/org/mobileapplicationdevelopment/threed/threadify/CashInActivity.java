@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.concurrent.Executors;
+
 public class CashInActivity extends AppCompatActivity implements View.OnClickListener{
 
     Button submit, add10, add20, add50, add100, add200, add500, add1000, add5000, add10000;
@@ -146,20 +148,53 @@ public class CashInActivity extends AppCompatActivity implements View.OnClickLis
             return;
         }
 
-        // Update the user's balance in the database
-        db.addBalance(money);
+        // Show a confirmation dialog
+        new AlertDialog.Builder(this)
+                .setMessage("Are you sure you want to add PHP " + money + " to your balance?")
+                .setPositiveButton("Proceed", (dialogInterface, i) -> {
+                    dialogInterface.dismiss();
 
-        // Display an alert dialog showing the success message and amount added
-        AlertDialog alert = new AlertDialog.Builder(this)
-                .setMessage("Cash-in successful! Added PHP " + money)
-                .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent toLogin = new Intent(CashInActivity.this, MainMenuActivity.class);
-                        startActivity(toLogin);
-                        finish();
-                    }
-                }).show();
+                    // Show a progress dialog while processing
+                    AlertDialog progressDialog = new AlertDialog.Builder(CashInActivity.this)
+                            .setMessage("Processing transaction, please wait...")
+                            .setCancelable(false)
+                            .show();
+
+                    // Use a background thread for database operations
+                    Executors.newSingleThreadExecutor().execute(() -> {
+                        try {
+                            // Execute the add balance operation
+                            db.addBalance(money);
+
+                            // Update the UI on the main thread
+                            runOnUiThread(() -> {
+                                progressDialog.dismiss();
+
+                                // Show success dialog
+                                new AlertDialog.Builder(CashInActivity.this)
+                                        .setMessage("Cash-in successful! Added PHP " + money)
+                                        .setPositiveButton("Proceed", (successDialog, successI) -> {
+                                            // Navigate to the main menu
+                                            Intent toMainMenu = new Intent(CashInActivity.this, MainMenuActivity.class);
+                                            startActivity(toMainMenu);
+                                            finish();
+                                        })
+                                        .setCancelable(false)
+                                        .show();
+                            });
+                        } catch (Exception e) {
+                            // Handle errors and update UI
+                            runOnUiThread(() -> {
+                                progressDialog.dismiss();
+                                Toast.makeText(CashInActivity.this, "Cash-in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            });
+                        }
+                    });
+                })
+                .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss())
+                .setCancelable(false)
+                .show();
+
     }
 
     @SuppressWarnings("deprecation")

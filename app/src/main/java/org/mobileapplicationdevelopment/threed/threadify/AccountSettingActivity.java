@@ -3,11 +3,12 @@ package org.mobileapplicationdevelopment.threed.threadify;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-public class ProfileActivity extends AppCompatActivity {
+public class AccountSettingActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,5 +32,14 @@ public class ProfileActivity extends AppCompatActivity {
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("deprecation")
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, MainMenuActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
