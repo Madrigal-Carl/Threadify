@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -20,6 +21,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_USERS = "Users";
     private static final String COLUMN_USER_ID = "user_id";
     private static final String COLUMN_FULLNAME = "fullname";
+    private static final String COLUMN_EMAIL = "email";
+    private static final String COLUMN_PHONENUMBER = "phone_number";
     private static final String COLUMN_USERNAME = "username";
     private static final String COLUMN_PASSWORD = "password";
 
@@ -48,10 +51,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String userQuery = String.format(
                 "CREATE TABLE %s (" +
                         "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        "%s VARCHAR(50) NOT NULL, " +
+                        "%s VARCHAR(30) NOT NULL, " +
+                        "%s VARCHAR(30) UNIQUE, " +
+                        "%s INTEGER UNIQUE, " +
                         "%s VARCHAR(18) NOT NULL UNIQUE, " +
                         "%s VARCHAR(18) NOT NULL)",
-                TABLE_USERS, COLUMN_USER_ID, COLUMN_FULLNAME, COLUMN_USERNAME, COLUMN_PASSWORD
+                TABLE_USERS, COLUMN_USER_ID, COLUMN_FULLNAME, COLUMN_EMAIL, COLUMN_PHONENUMBER, COLUMN_USERNAME, COLUMN_PASSWORD
         );
         db.execSQL(userQuery);
 
@@ -102,7 +107,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ContentValues cv = new ContentValues();
             cv.put(COLUMN_FULLNAME, fullname);
             cv.put(COLUMN_USERNAME, username);
-            cv.put(COLUMN_PASSWORD, password);
+            cv.put(COLUMN_PASSWORD, password); // Storing plain password
             long userResult = db.insert(TABLE_USERS, null, cv);
 
             if (userResult == -1) {
@@ -137,10 +142,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return false;
     }
 
+
     // Authenticate a user's login credentials
     public boolean userAuth(String username, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT u.user_id, u.fullname, u.username, w.current_balance " +
+        String query = "SELECT u.user_id, u.password, u.fullname, u.username, w.current_balance " +
                 "FROM Users u " +
                 "INNER JOIN Wallets w ON u.user_id = w.user_id " +
                 "WHERE u.username = ? AND u.password = ?";
@@ -153,6 +159,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             pref.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_USER_ID)));
             pref.setUsername(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USERNAME)));
             pref.setFullname(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_FULLNAME)));
+            pref.setPassword(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PASSWORD)));
             pref.setBalance(cursor.getString(cursor.getColumnIndexOrThrow("current_balance")));
 
             cursor.close();
@@ -164,6 +171,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return false;
     }
+
 
     // Add balance to the logged-in user's wallet
     public void addBalance(int money) {
@@ -217,6 +225,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT u.user_id FROM Users u WHERE u.username = ?";
         Cursor cursor = db.rawQuery(query, new String[]{username});
+
+        boolean userExists = cursor.moveToFirst();
+        cursor.close();
+        db.close();
+        return userExists;
+    }
+
+    // Check if a username exists excluding the current user
+    public boolean checkOtherUser(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        SharedPreferences pref = new SharedPreferences(context);
+        int senderId = pref.getUserId();
+
+        String query = "SELECT u.user_id FROM Users u WHERE u.username = ? AND u.user_id != ?";
+        Cursor cursor = db.rawQuery(query, new String[]{username, String.valueOf(senderId)});
 
         boolean userExists = cursor.moveToFirst();
         cursor.close();
@@ -296,14 +320,130 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-
+    // Get all transaction history of the user
     public Cursor getAllTransactionHistory() {
         SQLiteDatabase db = this.getReadableDatabase();
         SharedPreferences pref = new SharedPreferences(context);
-        int userId = pref.getUserId(); // Get the logged-in user's ID
+        int userId = pref.getUserId();
 
         String query = "SELECT * FROM " + TABLE_TRANSACTION_HISTORY + " WHERE " + COLUMN_TRANSACTION_USER_ID + " = ?";
         return db.rawQuery(query, new String[]{String.valueOf(userId)});
     }
+
+    // Set phone number of the user
+    public void setFullName(String newFullName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_FULLNAME, newFullName);
+
+        SharedPreferences pref = new SharedPreferences(context);
+        int userId = pref.getUserId();
+
+        // Update the database
+        int rowsAffected = db.update(TABLE_USERS, values, COLUMN_USER_ID + "=?", new String[]{String.valueOf(userId)});
+
+        if (rowsAffected > 0) {
+            // Update SharedPreferences
+            pref.setFullname(newFullName);
+        } else {
+            Toast.makeText(context, "Failed to update full name. No rows affected.", Toast.LENGTH_SHORT).show();
+        }
+
+        db.close();
+    }
+
+    // Set phone number of the user
+    public void setUsername(String newUsername) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_USERNAME, newUsername);
+
+        SharedPreferences pref = new SharedPreferences(context);
+        int userId = pref.getUserId();
+
+        // Update the database
+        int rowsAffected = db.update(TABLE_USERS, values, COLUMN_USER_ID + "=?", new String[]{String.valueOf(userId)});
+
+        if (rowsAffected > 0) {
+            // Update SharedPreferences
+            pref.setUsername(newUsername);
+        } else {
+            Toast.makeText(context, "Failed to update username. No rows affected.", Toast.LENGTH_SHORT).show();
+        }
+
+        db.close();
+    }
+
+
+    // Set email of the user
+    public void setEmail(String newEmail) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_EMAIL, newEmail);
+
+        SharedPreferences pref = new SharedPreferences(context);
+        int userId = pref.getUserId();
+
+        // Update the database
+        int rowsAffected = db.update(TABLE_USERS, values, COLUMN_USER_ID + "=?", new String[]{String.valueOf(userId)});
+
+        if (rowsAffected > 0) {
+            // Update SharedPreferences
+            pref.setEmail(newEmail);
+        } else {
+            Toast.makeText(context, "Failed to update email. No rows affected.", Toast.LENGTH_SHORT).show();
+        }
+
+        db.close();
+    }
+
+
+
+    // Set phone number of user
+    public void setPhoneNumber(String newPhoneNumber) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_PHONENUMBER, newPhoneNumber);
+
+        SharedPreferences pref = new SharedPreferences(context);
+        int userId = pref.getUserId();
+
+        // Update the database
+        int rowsAffected = db.update(TABLE_USERS, values, COLUMN_USER_ID + "=?", new String[]{String.valueOf(userId)});
+
+        if (rowsAffected > 0) {
+            // Update SharedPreferences
+            pref.setPhoneNumber(newPhoneNumber);
+        } else {
+            Toast.makeText(context, "Failed to update phone number. No rows affected.", Toast.LENGTH_SHORT).show();
+        }
+
+        db.close();
+    }
+
+
+    public void deleteUserAccount() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        SharedPreferences pref = new SharedPreferences(context);
+        int userId = pref.getUserId();
+
+        // Begin a transaction to ensure data integrity
+        db.beginTransaction();
+
+        // Delete the user from the User table (cascading deletes will automatically handle related records)
+        String deleteUserQuery = "DELETE FROM User WHERE user_id = ?";
+        SQLiteStatement deleteUserStmt = db.compileStatement(deleteUserQuery);
+        deleteUserStmt.bindLong(1, userId);
+        deleteUserStmt.executeUpdateDelete();
+
+        // Mark the transaction as successful and commit
+        db.setTransactionSuccessful();
+
+        // End the transaction
+        db.endTransaction();
+    }
+
+
 
 }

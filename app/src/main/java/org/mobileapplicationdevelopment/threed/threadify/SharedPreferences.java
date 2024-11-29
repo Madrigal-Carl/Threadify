@@ -11,7 +11,10 @@ public class SharedPreferences {
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
     private static final String KEY_FULLNAME = "fullname";
     private static final String KEY_USERNAME = "username";
+    private static final String KEY_PASSWORD = "password";
     private static final String KEY_USER_ID = "userId";
+    private static final String KEY_EMAIL = "email";
+    private static final String KEY_PHONENUMBER = "phoneNumber";
     private static final String KEY_BALANCE = "balance";
 
     private final android.content.SharedPreferences sharedPreferences;
@@ -53,7 +56,42 @@ public class SharedPreferences {
 
     // Get user's full name
     public String getFullname() {
-        return sharedPreferences.getString(KEY_FULLNAME, "Unknown User");
+        return sharedPreferences.getString(KEY_FULLNAME, "");
+    }
+
+    // Set user's password
+    public void setPassword(String password) {
+        editor.putString(KEY_PASSWORD, password);
+        editor.apply();
+    }
+
+    // Get user's password
+    public String getPassword() {
+        return sharedPreferences.getString(KEY_PASSWORD, "");
+    }
+
+    // Get user's email
+    public String getEmail() {
+        return sharedPreferences.getString(KEY_EMAIL, "");
+    }
+
+    // Set user's email
+    public void setEmail(String email) {
+        editor.putString(KEY_EMAIL, email);
+        editor.apply();
+    }
+
+
+
+    // Set user's phone number
+    public void setPhoneNumber(String phoneNumber) {
+        editor.putString(KEY_PHONENUMBER, phoneNumber);
+        editor.apply();
+    }
+
+    // Get user's phone number
+    public String getPhoneNumber() {
+        return sharedPreferences.getString(KEY_PHONENUMBER, "");
     }
 
     // Set username
@@ -64,7 +102,7 @@ public class SharedPreferences {
 
     // Get username
     public String getUsername() {
-        return sharedPreferences.getString(KEY_USERNAME, "Unknown");
+        return sharedPreferences.getString(KEY_USERNAME, "");
     }
 
     // Set wallet balance

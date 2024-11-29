@@ -1,19 +1,36 @@
 package org.mobileapplicationdevelopment.threed.threadify;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 public class AccountSettingActivity extends AppCompatActivity {
+
+    EditText fullname, username, email, phoneNumber;
+    Button editSave, delete;
+    Boolean onEdit = false;
+    SharedPreferences pref;
+    DatabaseHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        // Initialize shared preferences and Database helper
+        pref = new SharedPreferences(this);
+        db = new DatabaseHelper(this);
 
         // Setting up the action bar with back button
         if (getSupportActionBar() != null) {
@@ -21,6 +38,108 @@ public class AccountSettingActivity extends AppCompatActivity {
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
+
+        fullname = findViewById(R.id.fullnameFld);
+        username = findViewById(R.id.usernameFld);
+        email = findViewById(R.id.emailFld);
+        phoneNumber = findViewById(R.id.phoneNumberFld);
+        editSave = findViewById(R.id.editSaveBtn);
+        delete = findViewById(R.id.deleteBtn);
+
+        fullname.setText(pref.getFullname());
+        username.setText(pref.getUsername());
+        email.setText(pref.getEmail());
+        phoneNumber.setText(pref.getPhoneNumber());
+
+        editSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!onEdit){
+                    onEdit = !onEdit;
+                    editInformation();
+                } else {
+                    onEdit = !onEdit;
+                    saveInformation();
+                }
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                db.deleteUserAccount();
+            }
+        });
+    }
+
+    public void editInformation() {
+        disableInput(onEdit);
+        editSave.setText("Save");
+    }
+
+    public void disableInput(boolean enable) {
+        fullname.setEnabled(enable);
+        username.setEnabled(enable);
+        email.setEnabled(enable);
+        phoneNumber.setEnabled(enable);
+    }
+
+    public void saveInformation() {
+        final EditText inputPassword = new EditText(this);
+        inputPassword.setHint("Enter your password");
+        inputPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Confirm Password")
+                .setMessage("Please enter your password to proceed.")
+                .setView(inputPassword)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Get the password input from the EditText
+                        String enteredPassword = inputPassword.getText().toString().trim();
+                        String correctPassword = pref.getPassword();
+
+                        if (enteredPassword.equals(correctPassword)) {
+                            if (db.checkOtherUser(username.getText().toString())){
+                                Toast.makeText(AccountSettingActivity.this, "Username is already used", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+                            String full = fullname.getText().toString().trim();
+                            if (!full.isEmpty()){
+                                db.setFullName(full);
+                            }
+
+                            String user = username.getText().toString().trim();
+                            if (!user.isEmpty()){
+                                db.setUsername(user);
+                            }
+
+                            String user_email = email.getText().toString().trim();
+                            if (!user_email.isEmpty()){
+                                db.setEmail(user_email);
+                            }
+
+                            String phone = phoneNumber.getText().toString().trim();
+                            if (!phone.isEmpty()){
+                                db.setPhoneNumber(phone);
+                            }
+                            disableInput(onEdit);
+                            editSave.setText("Edit");
+                            Toast.makeText(getApplicationContext(), "Your Information has been updated", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Incorrect password. Please try again.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // User canceled, nothing happens
+                    }
+                })
+                .show();
     }
 
     @Override
