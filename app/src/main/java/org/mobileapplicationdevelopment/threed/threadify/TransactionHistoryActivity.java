@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,7 +35,9 @@ public class TransactionHistoryActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#EAEFF3")));
+            getSupportActionBar().setTitle("   Transaction History");
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
         }
 
         db = new DatabaseHelper(this);

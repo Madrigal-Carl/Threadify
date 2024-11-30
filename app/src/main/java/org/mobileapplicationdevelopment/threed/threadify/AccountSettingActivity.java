@@ -7,8 +7,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -35,9 +38,14 @@ public class AccountSettingActivity extends AppCompatActivity {
         // Setting up the action bar
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#131a30")));
             getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow_back_profile); // Ensure your arrow icon is drawable
+
         }
+
+
 
         fullname = findViewById(R.id.fullnameFld);
         username = findViewById(R.id.usernameFld);
@@ -174,6 +182,13 @@ public class AccountSettingActivity extends AppCompatActivity {
                     }
                 })
                 .show();
+    }
+
+    //Initialize profile menu xml with edit and Delete
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.profile, menu);
+        return true;
     }
 
     @Override

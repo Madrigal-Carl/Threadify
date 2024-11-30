@@ -2,6 +2,8 @@ package org.mobileapplicationdevelopment.threed.threadify;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,6 +36,7 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
             getSupportActionBar().setLogo(R.drawable.actionlogo);
             getSupportActionBar().setDisplayUseLogoEnabled(true);
             getSupportActionBar().setTitle("   Threadify");
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#EAEFF3")));
             getSupportActionBar().setDisplayShowTitleEnabled(true);
         }
 
