@@ -10,9 +10,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 public class MainMenuActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -45,7 +46,7 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         transaction_history = findViewById(R.id.transaction_historyBtn);
 
         // Set current balance from shared preferences
-        current_balance.setText("PHP " + pref.getBalance());
+        current_balance.setText(String.format("PHP %s", pref.getBalance()));
 
         // Set click listeners for buttons
         cash_in.setOnClickListener(this);
@@ -102,7 +103,7 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks
         int id = item.getItemId();
 
@@ -141,7 +142,6 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
                 .show();
     }
 
-    @SuppressWarnings("deprecation")
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {

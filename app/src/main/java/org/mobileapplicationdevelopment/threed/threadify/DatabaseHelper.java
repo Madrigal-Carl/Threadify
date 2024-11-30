@@ -481,4 +481,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public Cursor getAllUsernames() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT "+ COLUMN_USERNAME +" FROM " + TABLE_USERS, null);
+    }
+
 }

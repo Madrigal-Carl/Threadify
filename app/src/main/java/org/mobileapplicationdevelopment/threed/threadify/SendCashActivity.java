@@ -7,19 +7,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.concurrent.Executors;
 
 public class SendCashActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button submit, add10, add20, add50, add100, add200, add500, add1000, add5000, add10000;
-    EditText addInput, receiver;
+    EditText addInput;
+    AutoCompleteTextView receiver;
     DatabaseHelper db;
 
     @Override
@@ -52,6 +57,8 @@ public class SendCashActivity extends AppCompatActivity implements View.OnClickL
         // Initialize the database helper
         db = new DatabaseHelper(this);
 
+        loadUsernames();
+
         // Set click listeners for buttons
         submit.setOnClickListener(this);
         add10.setOnClickListener(this);
@@ -74,6 +81,26 @@ public class SendCashActivity extends AppCompatActivity implements View.OnClickL
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void loadUsernames() {
+        // Fetch usernames from the database
+        Cursor cursor = db.getAllUsernames();
+        if (cursor != null && cursor.getCount() > 0) {
+            ArrayList<String> usernames = new ArrayList<>();
+            while (cursor.moveToNext()) {
+                String username = cursor.getString(cursor.getColumnIndexOrThrow("username"));
+                usernames.add(username);
+            }
+
+            // Create an ArrayAdapter with the usernames list
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, usernames);
+
+            // Set the adapter to the AutoCompleteTextView
+            receiver.setAdapter(adapter);
+        } else {
+            Toast.makeText(this, "No users found.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     // Update the input amount when a button is clicked

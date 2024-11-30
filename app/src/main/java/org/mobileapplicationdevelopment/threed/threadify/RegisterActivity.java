@@ -128,6 +128,7 @@ public class RegisterActivity extends AppCompatActivity {
         // Add user to database
         if (db.addUser(full_name, user_name, user_password)) {
             AlertDialog alert = new AlertDialog.Builder(this)
+                    .setTitle("Account Created")
                     .setMessage("Your account is now ready.")
                     .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
                         @Override

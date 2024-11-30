@@ -8,7 +8,7 @@
     android:padding="20dp"
     android:background="@color/background_color">
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/receiver"
         android:layout_width="match_parent"
         android:layout_height="60dp"

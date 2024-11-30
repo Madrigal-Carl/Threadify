@@ -5,12 +5,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -52,40 +50,29 @@ public class AccountSettingActivity extends AppCompatActivity {
         email.setText(pref.getEmail());
         phoneNumber.setText(pref.getPhoneNumber());
 
-        editSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!onEdit){
-                    editInformation();
-                } else {
-                    saveInformation();
-                }
+        editSave.setOnClickListener(view -> {
+            if (!onEdit){
+                editInformation();
+            } else {
+                saveInformation();
             }
         });
 
-        delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new AlertDialog.Builder(AccountSettingActivity.this)
-                        .setTitle("Warning")
-                        .setMessage("Are you sure you want to delete your account?")
-                        .setCancelable(false)
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                db.deleteUserAccount(AccountSettingActivity.this);
+        delete.setOnClickListener(view -> new AlertDialog.Builder(AccountSettingActivity.this)
+                .setTitle("Warning")
+                .setMessage("Are you sure you want to delete your account?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    db.deleteUserAccount(AccountSettingActivity.this);
 
-                                pref.clearPreferences();
+                    pref.clearPreferences();
 
-                                Intent intent = new Intent(AccountSettingActivity.this, LoginActivity.class);
-                                startActivity(intent);
-                                finish();
-                            }
-                        })
-                        .setNegativeButton("No", null)
-                        .show();
-            }
-        });
+                    Intent intent = new Intent(AccountSettingActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                })
+                .setNegativeButton("No", null)
+                .show());
 
     }
 
@@ -103,10 +90,7 @@ public class AccountSettingActivity extends AppCompatActivity {
     }
 
     public boolean checkChanges(String fullname, String username, String email, String phone) {
-        if (!pref.getFullname().equals(fullname) || !pref.getUsername().equals(username) || !pref.getEmail().equals(email) || !pref.getPhoneNumber().equals(phone)) {
-            return true;
-        }
-        return false;
+        return !pref.getFullname().equals(fullname) || !pref.getUsername().equals(username) || !pref.getEmail().equals(email) || !pref.getPhoneNumber().equals(phone);
     }
 
     public void saveInformation() {
@@ -130,48 +114,42 @@ public class AccountSettingActivity extends AppCompatActivity {
                 .setTitle("Confirm Password")
                 .setMessage("Please enter your password to proceed.")
                 .setView(inputPassword)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Get the password input from the EditText
-                        String enteredPassword = inputPassword.getText().toString().trim();
-                        String correctPassword = pref.getPassword();
+                .setPositiveButton("OK", (dialog, which) -> {
+                    // Get the password input from the EditText
+                    String enteredPassword = inputPassword.getText().toString().trim();
+                    String correctPassword = pref.getPassword();
 
-                        if (enteredPassword.equals(correctPassword)) {
-                            if (db.checkOtherUser(username.getText().toString())){
-                                Toast.makeText(AccountSettingActivity.this, "Username is already used", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-
-                            if (!full.isEmpty()){
-                                db.setFullName(full);
-                            }
-
-                            if (!user.isEmpty()){
-                                db.setUsername(user);
-                            }
-
-                            if (!user_email.isEmpty()){
-                                db.setEmail(user_email);
-                            }
-
-                            if (!phone.isEmpty()){
-                                db.setPhoneNumber(phone);
-                            }
-                            disableInput(onEdit);
-                            editSave.setText("Edit");
-                            onEdit = false;
-                            Toast.makeText(getApplicationContext(), "Your Information has been updated", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Incorrect password. Please try again.", Toast.LENGTH_SHORT).show();
+                    if (enteredPassword.equals(correctPassword)) {
+                        if (db.checkOtherUser(username.getText().toString())){
+                            Toast.makeText(AccountSettingActivity.this, "Username is already used", Toast.LENGTH_SHORT).show();
+                            return;
                         }
+
+                        if (!full.isEmpty()){
+                            db.setFullName(full);
+                        }
+
+                        if (!user.isEmpty()){
+                            db.setUsername(user);
+                        }
+
+                        if (!user_email.isEmpty()){
+                            db.setEmail(user_email);
+                        }
+
+                        if (!phone.isEmpty()){
+                            db.setPhoneNumber(phone);
+                        }
+                        disableInput(onEdit);
+                        editSave.setText("Edit");
+                        onEdit = false;
+                        Toast.makeText(getApplicationContext(), "Your Information has been updated", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Incorrect password. Please try again.", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // User canceled, nothing happens
-                    }
+                .setNegativeButton("Cancel", (dialog, which) -> {
+                    // User canceled, nothing happens
                 })
                 .show();
     }
