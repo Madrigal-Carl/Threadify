@@ -36,7 +36,7 @@ public class TransactionHistoryActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#EAEFF3")));
-            getSupportActionBar().setTitle("   Transaction History");
+            getSupportActionBar().setTitle("Transaction History");
             getSupportActionBar().setDisplayShowTitleEnabled(true);
         }
 

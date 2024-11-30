@@ -44,6 +44,7 @@
         android:id="@+id/emailFld"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:background="@color/white"
         android:ems="10"
         android:enabled="false"
@@ -55,15 +56,15 @@
         android:textColor="@color/text_color_dark"
         android:textColorHint="@color/text_color_dark"
         app:layout_constraintEnd_toEndOf="@+id/usernameFld"
-        app:layout_constraintHorizontal_bias="0.506"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/usernameFld"
-        app:layout_constraintTop_toBottomOf="@+id/usernameFld" />
+        app:layout_constraintTop_toBottomOf="@+id/textView21" />
 
     <EditText
         android:id="@+id/usernameFld"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="10dp"
         android:background="@color/white"
         android:ems="10"
         android:enabled="false"
@@ -77,13 +78,13 @@
         app:layout_constraintEnd_toEndOf="@+id/fullnameFld"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/fullnameFld"
-        app:layout_constraintTop_toBottomOf="@+id/fullnameFld" />
+        app:layout_constraintTop_toBottomOf="@+id/textView20" />
 
     <EditText
         android:id="@+id/fullnameFld"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="24dp"
         android:background="@color/white"
         android:ems="10"
         android:enabled="false"
@@ -95,7 +96,7 @@
         android:textColor="@color/text_color_dark"
         android:textColorHint="@color/text_color_dark"
         app:layout_constraintEnd_toEndOf="@+id/imageView7"
-        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="@+id/imageView7"
         app:layout_constraintTop_toBottomOf="@+id/imageView7" />
 
@@ -103,6 +104,7 @@
         android:id="@+id/phoneNumberFld"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:background="@color/white"
         android:ems="10"
         android:enabled="false"
@@ -115,9 +117,8 @@
         android:textColor="@color/text_color_dark"
         android:textColorHint="@color/text_color_dark"
         app:layout_constraintEnd_toEndOf="@+id/emailFld"
-        app:layout_constraintHorizontal_bias="0.506"
         app:layout_constraintStart_toStartOf="@+id/emailFld"
-        app:layout_constraintTop_toBottomOf="@+id/emailFld" />
+        app:layout_constraintTop_toBottomOf="@+id/textView22" />
 
     <ImageView
         android:id="@+id/imageView7"
@@ -129,5 +130,56 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/defaultprof" />
+
+    <TextView
+        android:id="@+id/textView20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-10dp"
+        android:fontFamily="@font/questrial"
+        android:text="Full name"
+        android:textColor="@color/text_color_body"
+        app:layout_constraintEnd_toEndOf="@+id/fullnameFld"
+        app:layout_constraintStart_toStartOf="@+id/fullnameFld"
+        app:layout_constraintTop_toBottomOf="@+id/fullnameFld" />
+
+    <TextView
+        android:id="@+id/textView21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/questrial"
+        android:layout_marginTop="-10dp"
+        android:text="Username"
+        android:textColor="@color/text_color_body"
+        app:layout_constraintEnd_toEndOf="@+id/usernameFld"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="@+id/usernameFld"
+        app:layout_constraintTop_toBottomOf="@+id/usernameFld" />
+
+    <TextView
+        android:id="@+id/textView22"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-10dp"
+        android:fontFamily="@font/questrial"
+        android:text="Email Address"
+        android:textColor="@color/text_color_body"
+        app:layout_constraintEnd_toEndOf="@+id/emailFld"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="@+id/emailFld"
+        app:layout_constraintTop_toBottomOf="@+id/emailFld" />
+
+    <TextView
+        android:id="@+id/textView23"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-10dp"
+        android:fontFamily="@font/questrial"
+        android:text="Phone Number"
+        android:textColor="@color/text_color_body"
+        app:layout_constraintEnd_toEndOf="@+id/phoneNumberFld"
+        app:layout_constraintHorizontal_bias="0.511"
+        app:layout_constraintStart_toStartOf="@+id/phoneNumberFld"
+        app:layout_constraintTop_toBottomOf="@+id/phoneNumberFld" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

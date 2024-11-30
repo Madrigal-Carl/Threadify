@@ -38,10 +38,11 @@ public class AccountSettingActivity extends AppCompatActivity {
         // Setting up the action bar
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow_back_profile);
+            getSupportActionBar().setTitle("Account");
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#131a30")));
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow_back_profile); // Ensure your arrow icon is drawable
 
         }
 

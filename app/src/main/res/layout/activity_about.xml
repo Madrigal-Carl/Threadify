@@ -32,6 +32,7 @@
         android:text="@string/about_app"
         android:textColor="@color/text_color_body"
         android:textSize="12sp"
+        android:lineHeight="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
