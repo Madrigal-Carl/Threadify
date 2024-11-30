@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteStatement;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -13,17 +12,17 @@ import androidx.annotation.Nullable;
 import java.sql.SQLException;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    private Context context;
+    private final Context context;
     private static final String DATABASE_NAME = "Threadify.db";
     private static final int DATABASE_VERSION = 1;
 
     // Define constants for the Users table
     private static final String TABLE_USERS = "Users";
     private static final String COLUMN_USER_ID = "user_id";
+    private static final String COLUMN_USERNAME = "username";
     private static final String COLUMN_FULLNAME = "fullname";
     private static final String COLUMN_EMAIL = "email";
     private static final String COLUMN_PHONENUMBER = "phone_number";
-    private static final String COLUMN_USERNAME = "username";
     private static final String COLUMN_PASSWORD = "password";
 
     // Define constants for the Wallets table
@@ -40,6 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_TRANSACTION_AMOUNT = "transaction_amount";
     private static final String COLUMN_TRANSACTION_DATE = "transaction_date";
 
+    // Constructor
     public DatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
@@ -51,14 +51,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String userQuery = String.format(
                 "CREATE TABLE %s (" +
                         "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "%s VARCHAR(30) NOT NULL UNIQUE, " +
                         "%s VARCHAR(30) NOT NULL, " +
                         "%s VARCHAR(30) UNIQUE, " +
                         "%s INTEGER UNIQUE, " +
-                        "%s VARCHAR(18) NOT NULL UNIQUE, " +
-                        "%s VARCHAR(18) NOT NULL)",
-                TABLE_USERS, COLUMN_USER_ID, COLUMN_FULLNAME, COLUMN_EMAIL, COLUMN_PHONENUMBER, COLUMN_USERNAME, COLUMN_PASSWORD
+                        "%s VARCHAR(18) NOT NULL) ",
+                TABLE_USERS, COLUMN_USER_ID, COLUMN_USERNAME, COLUMN_FULLNAME, COLUMN_EMAIL, COLUMN_PHONENUMBER, COLUMN_PASSWORD
         );
         db.execSQL(userQuery);
+
+        // Insert sample user data
+        String insertUserQuery = String.format(
+                "INSERT INTO %s (%s, %s, %s, %s, %s) VALUES " +
+                        "('john_doe', 'John Doe', 'john.doe@example.com', '1234567890', 'password123'), " +
+                        "('jane_doe', 'Jane Doe', 'jane.doe@example.com', '2345678901', 'password123'), " +
+                        "('michael_smith', 'Michael Smith', 'michael.smith@example.com', '3456789012', 'password123'), " +
+                        "('emily_johnson', 'Emily Johnson', 'emily.johnson@example.com', '4567890123', 'password123'), " +
+                        "('chris_williams', 'Chris Williams', 'chris.williams@example.com', '5678901234', 'password123'), " +
+                        "('sophia_brown', 'Sophia Brown', 'sophia.brown@example.com', '6789012345', 'password123'), " +
+                        "('david_taylor', 'David Taylor', 'david.taylor@example.com', '7890123456', 'password123'), " +
+                        "('olivia_moore', 'Olivia Moore', 'olivia.moore@example.com', '8901234567', 'password123'), " +
+                        "('james_clark', 'James Clark', 'james.clark@example.com', '9012345678', 'password123'), " +
+                        "('isabella_lewis', 'Isabella Lewis', 'isabella.lewis@example.com', '0123456789', 'password123')",
+                TABLE_USERS, COLUMN_USERNAME, COLUMN_FULLNAME, COLUMN_EMAIL, COLUMN_PHONENUMBER, COLUMN_PASSWORD
+        );
+        db.execSQL(insertUserQuery);
 
         // Create the Wallets table
         String walletQuery = String.format(
@@ -99,7 +116,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Add a new user and create their wallet
     public Boolean addUser(String fullname, String username, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("PRAGMA foreign_keys=ON;"); // Enable foreign key constraints
+        db.execSQL("PRAGMA foreign_keys=ON;");
         db.beginTransaction();
 
         try {
@@ -107,7 +124,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ContentValues cv = new ContentValues();
             cv.put(COLUMN_FULLNAME, fullname);
             cv.put(COLUMN_USERNAME, username);
-            cv.put(COLUMN_PASSWORD, password); // Storing plain password
+            cv.put(COLUMN_PASSWORD, password);
             long userResult = db.insert(TABLE_USERS, null, cv);
 
             if (userResult == -1) {
@@ -129,13 +146,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ContentValues walletValues = new ContentValues();
                 walletValues.put(COLUMN_WALLET_USER_ID, userId);
                 walletValues.put(COLUMN_WALLET_BALANCE, 0.0);
-                long walletResult = db.insert(TABLE_WALLETS, null, walletValues);
-
-                if (walletResult == -1) {
-                    throw new SQLException("Error creating wallet");
-                }
+                db.insert(TABLE_WALLETS, null, walletValues);
             }
-
             db.setTransactionSuccessful();
             return true;
         } catch (SQLException e) {
@@ -183,7 +195,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     // Add balance to the logged-in user's wallet
-    public void addBalance(int money) {
+    public void addBalance(Double money) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("PRAGMA foreign_keys=ON;");
 
@@ -269,7 +281,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     // Transfer money to another user
-    public void sendCashToUser(String username, int money) {
+    public void sendCashToUser(String username, double money) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("PRAGMA foreign_keys=ON;");
 
@@ -350,6 +362,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Get all transaction history of the user
     public Cursor getAllTransactionHistory() {
         SQLiteDatabase db = this.getReadableDatabase();
+
         SharedPreferences pref = new SharedPreferences(context);
         int userId = pref.getUserId();
 
@@ -449,7 +462,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-
+    // Deletes the user account with its transaction history and wallet
     public void deleteUserAccount(Context context) {
         SQLiteDatabase db = null;
         try {
@@ -481,9 +494,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Cursor getAllUsernames() {
+    // Retrieves all username excluding the current user
+    public Cursor getAllUsernames(Context context) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT "+ COLUMN_USERNAME +" FROM " + TABLE_USERS, null);
+
+        SharedPreferences pref = new SharedPreferences(context);
+        int currentUserId = pref.getUserId();
+
+        String query = String.format(
+                "SELECT %s FROM %s WHERE %s != ?",
+                COLUMN_USERNAME, TABLE_USERS, COLUMN_USER_ID
+        );
+        return db.rawQuery(query, new String[]{String.valueOf(currentUserId)});
     }
 
 }

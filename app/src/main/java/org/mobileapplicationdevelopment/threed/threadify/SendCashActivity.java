@@ -5,9 +5,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +38,7 @@ public class SendCashActivity extends AppCompatActivity implements View.OnClickL
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
             getSupportActionBar().setTitle("Send Money");
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#EAEFF3")));
             getSupportActionBar().setDisplayShowTitleEnabled(true);
         }
 
@@ -57,6 +59,7 @@ public class SendCashActivity extends AppCompatActivity implements View.OnClickL
         // Initialize the database helper
         db = new DatabaseHelper(this);
 
+        // Get all username for suggestions in recipient's username field
         loadUsernames();
 
         // Set click listeners for buttons
@@ -83,9 +86,10 @@ public class SendCashActivity extends AppCompatActivity implements View.OnClickL
         return super.onOptionsItemSelected(item);
     }
 
+    // Loads all usernames from the database
     private void loadUsernames() {
         // Fetch usernames from the database
-        Cursor cursor = db.getAllUsernames();
+        Cursor cursor = db.getAllUsernames(this);
         if (cursor != null && cursor.getCount() > 0) {
             ArrayList<String> usernames = new ArrayList<>();
             while (cursor.moveToNext()) {
@@ -104,51 +108,33 @@ public class SendCashActivity extends AppCompatActivity implements View.OnClickL
     }
 
     // Update the input amount when a button is clicked
-    public void changeInputText(int money) {
-        int sum = 0;
+    private void changeInputText(double money) {
+        double sum = 0;
         if (!addInput.getText().toString().isEmpty()) {
-            sum = Integer.parseInt(addInput.getText().toString());
+            sum = Double.parseDouble(addInput.getText().toString());
         }
-        addInput.setText("" + (sum + money));
+        addInput.setText(String.format("%d", sum + money));
     }
 
     // Handle button clicks for adding amounts or submitting the form
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.add10:
-                changeInputText(10);
-                break;
-            case R.id.add20:
-                changeInputText(20);
-                break;
-            case R.id.add50:
-                changeInputText(50);
-                break;
-            case R.id.add100:
-                changeInputText(100);
-                break;
-            case R.id.add200:
-                changeInputText(200);
-                break;
-            case R.id.add500:
-                changeInputText(500);
-                break;
-            case R.id.add1000:
-                changeInputText(1000);
-                break;
-            case R.id.add5000:
-                changeInputText(5000);
-                break;
-            case R.id.add10000:
-                changeInputText(10000);
-                break;
+            case R.id.add10: changeInputText(10); break;
+            case R.id.add20: changeInputText(20); break;
+            case R.id.add50: changeInputText(50); break;
+            case R.id.add100: changeInputText(100); break;
+            case R.id.add200: changeInputText(200); break;
+            case R.id.add500: changeInputText(500); break;
+            case R.id.add1000: changeInputText(1000); break;
+            case R.id.add5000: changeInputText(5000); break;
+            case R.id.add10000: changeInputText(10000); break;
             case R.id.submit:
                 // Validate and send the cash
                 if (!addInput.getText().toString().isEmpty()) {
-                    sendCash(Integer.parseInt(addInput.getText().toString()));
+                    sendCash(Double.parseDouble(addInput.getText().toString()));
                 } else {
-                    sendCash(0);
+                    addInput.setError("Please enter an input");
                 }
                 break;
             default:
@@ -157,7 +143,7 @@ public class SendCashActivity extends AppCompatActivity implements View.OnClickL
     }
 
     // Main method to handle sending cash
-    public void sendCash(int money) {
+    private void sendCash(double money) {
         SharedPreferences pref = new SharedPreferences(this);
 
         // Check if the input amount is valid

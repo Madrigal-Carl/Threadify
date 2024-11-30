@@ -1,10 +1,8 @@
 package org.mobileapplicationdevelopment.threed.threadify;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -35,26 +33,18 @@ public class LoginActivity extends AppCompatActivity {
         db = new DatabaseHelper(this);
 
         // Register button to redirect the user to the register activity
-        register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent toRegister = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(toRegister);
-                finish();
-            }
+        register.setOnClickListener(view -> {
+            Intent toRegister = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(toRegister);
+            finish();
         });
 
         // Login button to trigger the login process
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userAuthentication();
-            }
-        });
+        login.setOnClickListener(view -> userAuthentication());
     }
 
     // Method to handle user authentication
-    public void userAuthentication() {
+    private void userAuthentication() {
         // Retrieve user input from the username and password fields
         String user_name = username.getText().toString().trim();
         String pass = password.getText().toString().trim();
@@ -83,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
 
     // Method to display an exit confirmation dialog when the back button is pressed
     protected void exitByBackKey() {
-        AlertDialog alert = new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this)
                 .setMessage("Do you want to exit the application?")
                 .setPositiveButton("Yes", (dialog, which) -> finish())
                 .setNegativeButton("No", (dialog, which) -> dialog.dismiss())

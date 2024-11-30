@@ -81,8 +81,6 @@ public class SharedPreferences {
         editor.apply();
     }
 
-
-
     // Set user's phone number
     public void setPhoneNumber(String phoneNumber) {
         editor.putString(KEY_PHONENUMBER, phoneNumber);

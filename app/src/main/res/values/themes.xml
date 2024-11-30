@@ -39,7 +39,7 @@
     <!-- Custom Title Text Style -->
     <style name="ActionBarTitleText" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textColor">@color/text_color_dark</item>
-        <item name="android:fontFamily">@font/poppins_bold_italic</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
         <item name="android:textSize">18sp</item>
     </style>
 

@@ -2,6 +2,8 @@ package org.mobileapplicationdevelopment.threed.threadify;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,13 +14,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
 public class MainMenuActivity extends AppCompatActivity implements View.OnClickListener {
 
     TextView current_balance;
-    Button cash_in, cash_out, buy_load, transaction_history;
+    Button cashIn, cashOut, buyLoad, payBills, transaction_history;
     SharedPreferences pref;
 
     @Override
@@ -35,23 +35,25 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
             getSupportActionBar().setLogo(R.drawable.actionlogo);
             getSupportActionBar().setDisplayUseLogoEnabled(true);
             getSupportActionBar().setTitle("   Threadify");
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#EAEFF3")));
             getSupportActionBar().setDisplayShowTitleEnabled(true);
         }
 
         // Finding views in the layout
         current_balance = findViewById(R.id.current_balanceView);
-        cash_in = findViewById(R.id.cash_inBtn);
-        cash_out = findViewById(R.id.cash_outBtn);
-        buy_load = findViewById(R.id.buy_loadBtn);
+        cashIn = findViewById(R.id.cash_inBtn);
+        cashOut = findViewById(R.id.cash_outBtn);
+        buyLoad = findViewById(R.id.buy_loadBtn);
+        payBills = findViewById(R.id.pay_billsBtn);
         transaction_history = findViewById(R.id.transaction_historyBtn);
 
         // Set current balance from shared preferences
         current_balance.setText(String.format("PHP %s", pref.getBalance()));
 
         // Set click listeners for buttons
-        cash_in.setOnClickListener(this);
-        cash_out.setOnClickListener(this);
-        buy_load.setOnClickListener(this);
+        cashIn.setOnClickListener(this);
+        cashOut.setOnClickListener(this);
+        buyLoad.setOnClickListener(this);
         transaction_history.setOnClickListener(this);
     }
 
@@ -73,13 +75,10 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
                 finish();
                 break;
 
+            // Notify the user that this feature is under development
             case R.id.buy_loadBtn:
-                // Notify the user that this feature is under development
-                Toast.makeText(this, "This feature is under development", Toast.LENGTH_SHORT).show();
-                break;
 
             case R.id.pay_billsBtn:
-                // Notify the user that this feature is under development
                 Toast.makeText(this, "This feature is under development", Toast.LENGTH_SHORT).show();
                 break;
 
@@ -135,7 +134,7 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
 
     // Method to display an exit confirmation dialog when the back button is pressed
     protected void exitByBackKey() {
-        AlertDialog alert = new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this)
                 .setMessage("Do you want to exit the application?")
                 .setPositiveButton("Yes", (dialog, which) -> finish())
                 .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
@@ -145,7 +144,6 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
-        // Override back button behavior to show the exit confirmation dialog
         exitByBackKey();
     }
 }

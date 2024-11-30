@@ -6,94 +6,75 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 public class AccountSettingActivity extends AppCompatActivity {
 
     EditText fullname, username, email, phoneNumber;
-    Button editSave, delete;
     Boolean onEdit = false;
     SharedPreferences pref;
     DatabaseHelper db;
 
+    // Initializes activity and pre-populates user information
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_account_setting);
 
-        // Initialize SharedPreferences and DatabaseHelper
         pref = new SharedPreferences(this);
         db = new DatabaseHelper(this);
 
-        // Setting up the action bar
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow_back_profile);
+            getSupportActionBar().setTitle("Account");
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#131a30")));
         }
 
         fullname = findViewById(R.id.fullnameFld);
         username = findViewById(R.id.usernameFld);
         email = findViewById(R.id.emailFld);
         phoneNumber = findViewById(R.id.phoneNumberFld);
-        editSave = findViewById(R.id.editSaveBtn);
-        delete = findViewById(R.id.deleteBtn);
 
-        // Populate fields with SharedPreferences data
         fullname.setText(pref.getFullname());
         username.setText(pref.getUsername());
         email.setText(pref.getEmail());
         phoneNumber.setText(pref.getPhoneNumber());
 
-        editSave.setOnClickListener(view -> {
-            if (!onEdit){
-                editInformation();
-            } else {
-                saveInformation();
-            }
-        });
-
-        delete.setOnClickListener(view -> new AlertDialog.Builder(AccountSettingActivity.this)
-                .setTitle("Warning")
-                .setMessage("Are you sure you want to delete your account?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", (dialog, which) -> {
-                    db.deleteUserAccount(AccountSettingActivity.this);
-
-                    pref.clearPreferences();
-
-                    Intent intent = new Intent(AccountSettingActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    finish();
-                })
-                .setNegativeButton("No", null)
-                .show());
-
     }
 
-    public void editInformation() {
-        disableInput(onEdit);
-        editSave.setText("Save");
-        onEdit = true;
-    }
-
-    public void disableInput(boolean enable) {
+    // Toggles input fields between enabled and disabled states
+    private void disableInput(boolean enable) {
         fullname.setEnabled(!enable);
         username.setEnabled(!enable);
         email.setEnabled(!enable);
         phoneNumber.setEnabled(!enable);
     }
 
-    public boolean checkChanges(String fullname, String username, String email, String phone) {
-        return !pref.getFullname().equals(fullname) || !pref.getUsername().equals(username) || !pref.getEmail().equals(email) || !pref.getPhoneNumber().equals(phone);
+    // Enables user to edit their information
+    private void editInformation() {
+        disableInput(onEdit);
+        onEdit = true;
     }
 
-    public void saveInformation() {
+    // Checks if any user information has been modified
+    private boolean checkChanges(String fullname, String username, String email, String phone) {
+        return !pref.getFullname().equals(fullname) ||
+                !pref.getUsername().equals(username) ||
+                !pref.getEmail().equals(email) ||
+                !pref.getPhoneNumber().equals(phone);
+    }
+
+    // Saves user information after validating changes and confirming the password
+    private void saveInformation() {
         String full = fullname.getText().toString().trim();
         String user = username.getText().toString().trim();
         String user_email = email.getText().toString().trim();
@@ -101,7 +82,6 @@ public class AccountSettingActivity extends AppCompatActivity {
 
         if (!checkChanges(full, user, user_email, phone)){
             disableInput(onEdit);
-            editSave.setText("Edit");
             onEdit = false;
             return;
         }
@@ -141,7 +121,6 @@ public class AccountSettingActivity extends AppCompatActivity {
                             db.setPhoneNumber(phone);
                         }
                         disableInput(onEdit);
-                        editSave.setText("Edit");
                         onEdit = false;
                         Toast.makeText(getApplicationContext(), "Your Information has been updated", Toast.LENGTH_SHORT).show();
                     } else {
@@ -154,17 +133,49 @@ public class AccountSettingActivity extends AppCompatActivity {
                 .show();
     }
 
+    // Loads menu with account settings options
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.account_setting_bar, menu);
+        return true;
+    }
+
+    // Handles actions for menu items like edit, save, or delete
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        // Navigate back to MainMenuActivity when back button is pressed
-        if (item.getItemId() == android.R.id.home) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
             Intent intent = new Intent(this, MainMenuActivity.class);
             startActivity(intent);
             finish();
+        } else if (id == R.id.editSaveBtn) {
+            if (!onEdit){
+                editInformation();
+            } else {
+                saveInformation();
+            }
+        } else if (id == R.id.deleteBtn) {
+            new AlertDialog.Builder(AccountSettingActivity.this)
+                    .setTitle("Warning")
+                    .setMessage("Are you sure you want to delete your account?")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        db.deleteUserAccount(AccountSettingActivity.this);
+
+                        pref.clearPreferences();
+
+                        Intent intent = new Intent(AccountSettingActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
         }
         return super.onOptionsItemSelected(item);
     }
 
+    // Handles back button navigation to MainMenuActivity
     @SuppressWarnings("deprecation")
     @SuppressLint("MissingSuperCall")
     @Override

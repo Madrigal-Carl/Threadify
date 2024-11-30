@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DevelopersActivity">
+    tools:context=".DevelopersActivity"
+    android:background="@color/background_color">
 
     <TextView
         android:id="@+id/textView7"
@@ -12,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:fontFamily="@font/poppins_semibold"
-        android:text="Meet the Developers"
+        android:text="@string/meet_the_developers"
         android:textSize="16sp"
         android:textColor="@color/text_color_dark"
         app:layout_constraintEnd_toEndOf="parent"

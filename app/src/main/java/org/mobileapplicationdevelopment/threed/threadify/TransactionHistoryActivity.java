@@ -7,11 +7,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +21,7 @@ import java.util.Collections;
 public class TransactionHistoryActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
+    ImageView transactionImg;
     DatabaseHelper db;
     ArrayList<String> transaction_amount, transaction_type, transaction_date;
     CustomAdapter customAdapter;
@@ -33,12 +36,15 @@ public class TransactionHistoryActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#EAEFF3")));
+            getSupportActionBar().setTitle("Transaction History");
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
         }
 
         db = new DatabaseHelper(this);
         recyclerView = findViewById(R.id.recyclerView);
         noTransactions = findViewById(R.id.noTransactions);
+        transactionImg = findViewById(R.id.noTransactionImg);
 
         transaction_amount = new ArrayList<>();
         transaction_type = new ArrayList<>();
@@ -52,14 +58,15 @@ public class TransactionHistoryActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
+    // Store all user transaction history to the array
     public void storeTransactionHistory() {
-
         // Fetch transaction history from the database
         Cursor cursor = db.getAllTransactionHistory();
 
         if (cursor.getCount() == 0) {
             // Show the "No transaction history" message
             noTransactions.setVisibility(View.VISIBLE);
+            transactionImg.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
         } else {
             // Hide the message and show the RecyclerView

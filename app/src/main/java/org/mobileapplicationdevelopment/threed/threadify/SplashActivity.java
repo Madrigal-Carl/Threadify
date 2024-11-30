@@ -16,24 +16,22 @@ public class SplashActivity extends AppCompatActivity {
         SharedPreferences pref = new SharedPreferences(this);
 
         // Create a thread to simulate a splash screen delay
-        Thread mythread = new Thread() {
-            public void run() {
-                try {
-                    sleep(3000);
+        Thread mythread = new Thread(() -> {
+            try {
+                Thread.sleep(3000);
 
-                    // Navigate to the appropriate activity based on login status
-                    Intent myIntent;
-                    if (pref.isLoggedIn()) {
-                        myIntent = new Intent(SplashActivity.this, WelcomeBackActivity.class);
-                    } else {
-                        myIntent = new Intent(SplashActivity.this, LoginActivity.class);
-                    }
-                    startActivity(myIntent); // Start the activity
-                    finish();
-                } catch (Exception e) {
+                // Navigate to the appropriate activity based on login status
+                Intent myIntent;
+                if (pref.isLoggedIn()) {
+                    myIntent = new Intent(SplashActivity.this, WelcomeBackActivity.class);
+                } else {
+                    myIntent = new Intent(SplashActivity.this, LoginActivity.class);
                 }
+                startActivity(myIntent); // Start the activity
+                finish();
+            } catch (Exception ignored) {
             }
-        };
+        });
 
         // Start the thread
         mythread.start();

@@ -37,22 +37,14 @@ public class RegisterActivity extends AppCompatActivity {
         db = new DatabaseHelper(this);
 
         // Login button to redirect the user to the login activity
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent toLogin = new Intent(RegisterActivity.this, LoginActivity.class);
-                startActivity(toLogin);
-                finish();
-            }
+        login.setOnClickListener(view -> {
+            Intent toLogin = new Intent(RegisterActivity.this, LoginActivity.class);
+            startActivity(toLogin);
+            finish();
         });
 
         // Register button to trigger the registration process
-        register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                registerUser();
-            }
-        });
+        register.setOnClickListener(view -> registerUser());
     }
 
     @SuppressWarnings("deprecation")
@@ -65,7 +57,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     // Registering new user
-    public void registerUser() {
+    private void registerUser() {
         String full_name = fullname.getText().toString().trim();
         String user_name = username.getText().toString().trim();
         String user_password = password.getText().toString().trim();
@@ -127,16 +119,13 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Add user to database
         if (db.addUser(full_name, user_name, user_password)) {
-            AlertDialog alert = new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this)
                     .setTitle("Account Created")
                     .setMessage("Your account is now ready.")
-                    .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            Intent toLogin = new Intent(RegisterActivity.this, LoginActivity.class);
-                            startActivity(toLogin);
-                            finish();
-                        }
+                    .setPositiveButton("Proceed", (dialogInterface, i) -> {
+                        Intent toLogin = new Intent(RegisterActivity.this, LoginActivity.class);
+                        startActivity(toLogin);
+                        finish();
                     }).show();
         }
     }

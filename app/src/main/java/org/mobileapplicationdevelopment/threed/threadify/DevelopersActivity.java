@@ -5,24 +5,29 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 public class DevelopersActivity extends AppCompatActivity {
 
+    // Initializes the AboutActivity and sets up the action bar
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_developers);
 
-        // Setting up the action bar with back button
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setTitle("Developers");
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#EAEFF3")));
         }
     }
 
+    // Handles back button action from the action bar
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         // Navigate back to MainMenuActivity when back button is pressed
@@ -34,6 +39,7 @@ public class DevelopersActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // Handles device back button navigation
     @SuppressWarnings("deprecation")
     @SuppressLint("MissingSuperCall")
     @Override
