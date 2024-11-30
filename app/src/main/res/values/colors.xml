@@ -16,4 +16,5 @@
     <color name="hinttxtcolor">#65FFFFFF</color>
     <color name="darkbtn">#131a30</color>
     <color name="text_color_dark">#424242</color>
+    <color name="text_color_body">#5C5C5C</color>
 </resources>
