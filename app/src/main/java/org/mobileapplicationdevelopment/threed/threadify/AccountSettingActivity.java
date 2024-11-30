@@ -28,11 +28,11 @@ public class AccountSettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        // Initialize shared preferences and Database helper
+        // Initialize SharedPreferences and DatabaseHelper
         pref = new SharedPreferences(this);
         db = new DatabaseHelper(this);
 
-        // Setting up the action bar with back button
+        // Setting up the action bar
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
@@ -46,6 +46,7 @@ public class AccountSettingActivity extends AppCompatActivity {
         editSave = findViewById(R.id.editSaveBtn);
         delete = findViewById(R.id.deleteBtn);
 
+        // Populate fields with SharedPreferences data
         fullname.setText(pref.getFullname());
         username.setText(pref.getUsername());
         email.setText(pref.getEmail());
@@ -55,10 +56,8 @@ public class AccountSettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (!onEdit){
-                    onEdit = !onEdit;
                     editInformation();
                 } else {
-                    onEdit = !onEdit;
                     saveInformation();
                 }
             }
@@ -67,24 +66,62 @@ public class AccountSettingActivity extends AppCompatActivity {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                db.deleteUserAccount();
+                new AlertDialog.Builder(AccountSettingActivity.this)
+                        .setTitle("Warning")
+                        .setMessage("Are you sure you want to delete your account?")
+                        .setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                db.deleteUserAccount(AccountSettingActivity.this);
+
+                                pref.clearPreferences();
+
+                                Intent intent = new Intent(AccountSettingActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
             }
         });
+
     }
 
     public void editInformation() {
         disableInput(onEdit);
         editSave.setText("Save");
+        onEdit = true;
     }
 
     public void disableInput(boolean enable) {
-        fullname.setEnabled(enable);
-        username.setEnabled(enable);
-        email.setEnabled(enable);
-        phoneNumber.setEnabled(enable);
+        fullname.setEnabled(!enable);
+        username.setEnabled(!enable);
+        email.setEnabled(!enable);
+        phoneNumber.setEnabled(!enable);
+    }
+
+    public boolean checkChanges(String fullname, String username, String email, String phone) {
+        if (!pref.getFullname().equals(fullname) || !pref.getUsername().equals(username) || !pref.getEmail().equals(email) || !pref.getPhoneNumber().equals(phone)) {
+            return true;
+        }
+        return false;
     }
 
     public void saveInformation() {
+        String full = fullname.getText().toString().trim();
+        String user = username.getText().toString().trim();
+        String user_email = email.getText().toString().trim();
+        String phone = phoneNumber.getText().toString().trim();
+
+        if (!checkChanges(full, user, user_email, phone)){
+            disableInput(onEdit);
+            editSave.setText("Edit");
+            onEdit = false;
+            return;
+        }
+
         final EditText inputPassword = new EditText(this);
         inputPassword.setHint("Enter your password");
         inputPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -106,27 +143,24 @@ public class AccountSettingActivity extends AppCompatActivity {
                                 return;
                             }
 
-                            String full = fullname.getText().toString().trim();
                             if (!full.isEmpty()){
                                 db.setFullName(full);
                             }
 
-                            String user = username.getText().toString().trim();
                             if (!user.isEmpty()){
                                 db.setUsername(user);
                             }
 
-                            String user_email = email.getText().toString().trim();
                             if (!user_email.isEmpty()){
                                 db.setEmail(user_email);
                             }
 
-                            String phone = phoneNumber.getText().toString().trim();
                             if (!phone.isEmpty()){
                                 db.setPhoneNumber(phone);
                             }
                             disableInput(onEdit);
                             editSave.setText("Edit");
+                            onEdit = false;
                             Toast.makeText(getApplicationContext(), "Your Information has been updated", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(getApplicationContext(), "Incorrect password. Please try again.", Toast.LENGTH_SHORT).show();

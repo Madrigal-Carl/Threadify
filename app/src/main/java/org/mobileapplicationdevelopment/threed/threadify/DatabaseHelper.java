@@ -115,7 +115,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
 
             // Retrieve the user's ID to create their wallet
-            Cursor cursor = db.query(TABLE_USERS, new String[]{COLUMN_USER_ID}, COLUMN_USERNAME + " = ?", new String[]{username}, null, null, null);
+            String query = String.format(
+                    "SELECT %s FROM %s WHERE %s = ?",
+                    COLUMN_USER_ID, TABLE_USERS, COLUMN_USERNAME
+            );
+            Cursor cursor = db.rawQuery(query, new String[]{username});
+
             if (cursor != null && cursor.moveToFirst()) {
                 long userId = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_USER_ID));
                 cursor.close();
@@ -146,10 +151,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Authenticate a user's login credentials
     public boolean userAuth(String username, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT u.user_id, u.password, u.fullname, u.username, w.current_balance " +
-                "FROM Users u " +
-                "INNER JOIN Wallets w ON u.user_id = w.user_id " +
-                "WHERE u.username = ? AND u.password = ?";
+        String query = String.format(
+                "SELECT u.%s, u.%s, u.%s, u.%s, w.%s " +
+                        "FROM %s u INNER JOIN %s w ON u.%s = w.%s " +
+                        "WHERE u.%s = ? AND u.%s = ?",
+                COLUMN_USER_ID, COLUMN_PASSWORD, COLUMN_FULLNAME, COLUMN_USERNAME, COLUMN_WALLET_BALANCE,
+                TABLE_USERS, TABLE_WALLETS, COLUMN_USER_ID, COLUMN_WALLET_USER_ID,
+                COLUMN_USERNAME, COLUMN_PASSWORD
+        );
         Cursor cursor = db.rawQuery(query, new String[]{username, password});
 
         if (cursor.moveToFirst()) {
@@ -184,7 +193,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.beginTransaction();
         try {
             // Fetch current wallet balance
-            String query = "SELECT " + COLUMN_WALLET_BALANCE + " FROM " + TABLE_WALLETS + " WHERE " + COLUMN_WALLET_USER_ID + " = ?";
+            String query = String.format(
+                    "SELECT %s FROM %s WHERE %s = ?",
+                    COLUMN_WALLET_BALANCE, TABLE_WALLETS, COLUMN_WALLET_USER_ID
+            );
             Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId)});
 
             if (cursor.moveToFirst()) {
@@ -223,7 +235,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Check if a username exists
     public boolean checkUser(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT u.user_id FROM Users u WHERE u.username = ?";
+        String query = String.format(
+                "SELECT %s FROM %s WHERE %s = ?",
+                COLUMN_USER_ID, TABLE_USERS, COLUMN_USERNAME
+        );
         Cursor cursor = db.rawQuery(query, new String[]{username});
 
         boolean userExists = cursor.moveToFirst();
@@ -232,6 +247,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return userExists;
     }
 
+
     // Check if a username exists excluding the current user
     public boolean checkOtherUser(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -239,7 +255,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SharedPreferences pref = new SharedPreferences(context);
         int senderId = pref.getUserId();
 
-        String query = "SELECT u.user_id FROM Users u WHERE u.username = ? AND u.user_id != ?";
+        String query = String.format(
+                "SELECT %s FROM %s WHERE %s = ? AND %s != ?",
+                COLUMN_USER_ID, TABLE_USERS, COLUMN_USERNAME, COLUMN_USER_ID
+        );
         Cursor cursor = db.rawQuery(query, new String[]{username, String.valueOf(senderId)});
 
         boolean userExists = cursor.moveToFirst();
@@ -247,6 +266,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return userExists;
     }
+
 
     // Transfer money to another user
     public void sendCashToUser(String username, int money) {
@@ -259,8 +279,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.beginTransaction();
         try {
             // Fetch sender's balance and validate transaction
-            String senderQuery = "SELECT " + COLUMN_WALLET_BALANCE + " FROM " + TABLE_WALLETS + " WHERE " + COLUMN_WALLET_USER_ID + " = ?";
+            String senderQuery = String.format(
+                    "SELECT %s FROM %s WHERE %s = ?",
+                    COLUMN_WALLET_BALANCE, TABLE_WALLETS, COLUMN_WALLET_USER_ID
+            );
             Cursor senderCursor = db.rawQuery(senderQuery, new String[]{String.valueOf(senderId)});
+
             if (!senderCursor.moveToFirst()) {
                 senderCursor.close();
                 throw new SQLException("Sender wallet not found.");
@@ -271,11 +295,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             if (senderBalance < money) throw new SQLException("Insufficient funds.");
 
             // Fetch recipient's wallet and user ID
-            String recipientQuery = "SELECT w." + COLUMN_WALLET_BALANCE + ", u." + COLUMN_USER_ID +
-                    " FROM " + TABLE_USERS + " u " +
-                    "INNER JOIN " + TABLE_WALLETS + " w ON u." + COLUMN_USER_ID + " = w." + COLUMN_WALLET_USER_ID +
-                    " WHERE u." + COLUMN_USERNAME + " = ?";
+            String recipientQuery = String.format(
+                    "SELECT w.%s, u.%s FROM %s u " +
+                            "INNER JOIN %s w ON u.%s = w.%s WHERE u.%s = ?",
+                    COLUMN_WALLET_BALANCE, COLUMN_USER_ID, TABLE_USERS,
+                    TABLE_WALLETS, COLUMN_USER_ID, COLUMN_WALLET_USER_ID, COLUMN_USERNAME
+            );
             Cursor recipientCursor = db.rawQuery(recipientQuery, new String[]{username});
+
             if (!recipientCursor.moveToFirst()) {
                 recipientCursor.close();
                 throw new SQLException("Recipient not found.");
@@ -326,7 +353,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SharedPreferences pref = new SharedPreferences(context);
         int userId = pref.getUserId();
 
-        String query = "SELECT * FROM " + TABLE_TRANSACTION_HISTORY + " WHERE " + COLUMN_TRANSACTION_USER_ID + " = ?";
+        String query = String.format(
+                "SELECT * FROM %s WHERE %s = ?",
+                TABLE_TRANSACTION_HISTORY, COLUMN_TRANSACTION_USER_ID
+        );
         return db.rawQuery(query, new String[]{String.valueOf(userId)});
     }
 
@@ -397,8 +427,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-
-
     // Set phone number of user
     public void setPhoneNumber(String newPhoneNumber) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -422,28 +450,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public void deleteUserAccount() {
-        SQLiteDatabase db = this.getWritableDatabase();
+    public void deleteUserAccount(Context context) {
+        SQLiteDatabase db = null;
+        try {
+            db = this.getWritableDatabase();
+            SharedPreferences pref = new SharedPreferences(context);
+            int userId = pref.getUserId();
 
-        SharedPreferences pref = new SharedPreferences(context);
-        int userId = pref.getUserId();
+            if (userId == -1) {
+                throw new IllegalArgumentException("Invalid user ID");
+            }
 
-        // Begin a transaction to ensure data integrity
-        db.beginTransaction();
+            db.beginTransaction();
 
-        // Delete the user from the User table (cascading deletes will automatically handle related records)
-        String deleteUserQuery = "DELETE FROM User WHERE user_id = ?";
-        SQLiteStatement deleteUserStmt = db.compileStatement(deleteUserQuery);
-        deleteUserStmt.bindLong(1, userId);
-        deleteUserStmt.executeUpdateDelete();
+            String deleteUserQuery = String.format(
+                    "DELETE FROM %s WHERE %s = ?",
+                    TABLE_USERS, COLUMN_USER_ID
+            );
+            db.execSQL(deleteUserQuery, new Object[]{userId});
 
-        // Mark the transaction as successful and commit
-        db.setTransactionSuccessful();
-
-        // End the transaction
-        db.endTransaction();
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(context, "Error deleting account!", Toast.LENGTH_SHORT).show();
+        } finally {
+            if (db != null) {
+                db.endTransaction();
+                db.close();
+            }
+        }
     }
-
-
 
 }
