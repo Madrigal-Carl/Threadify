@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ public class TransactionHistoryActivity extends AppCompatActivity {
     DatabaseHelper db;
     ArrayList<String> transaction_amount, transaction_type, transaction_date;
     CustomAdapter customAdapter;
+    TextView noTransactions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,7 @@ public class TransactionHistoryActivity extends AppCompatActivity {
 
         db = new DatabaseHelper(this);
         recyclerView = findViewById(R.id.recyclerView);
+        noTransactions = findViewById(R.id.noTransactions);
 
         transaction_amount = new ArrayList<>();
         transaction_type = new ArrayList<>();
@@ -49,11 +53,19 @@ public class TransactionHistoryActivity extends AppCompatActivity {
     }
 
     public void storeTransactionHistory() {
+
         // Fetch transaction history from the database
         Cursor cursor = db.getAllTransactionHistory();
+
         if (cursor.getCount() == 0) {
-            Toast.makeText(this, "No transactions found", Toast.LENGTH_SHORT).show();
+            // Show the "No transaction history" message
+            noTransactions.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
         } else {
+            // Hide the message and show the RecyclerView
+            noTransactions.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+
             while (cursor.moveToNext()) {
                 // Add data to respective ArrayLists
                 transaction_amount.add(cursor.getString(cursor.getColumnIndexOrThrow("transaction_amount")));
@@ -63,6 +75,7 @@ public class TransactionHistoryActivity extends AppCompatActivity {
         }
         cursor.close();
     }
+
 
     // Reverse the lists to show the latest transactions first
     private void reverseListOrder() {
