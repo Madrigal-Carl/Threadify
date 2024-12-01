@@ -86,6 +86,11 @@ public class AccountSettingActivity extends AppCompatActivity {
             return;
         }
 
+        if (!user_email.endsWith("@gmail.com")) {
+            Toast.makeText(this, "Please enter a valid Gmail address.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         final EditText inputPassword = new EditText(this);
         inputPassword.setHint("Enter your password");
         inputPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);

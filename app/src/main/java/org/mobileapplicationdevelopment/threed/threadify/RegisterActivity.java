@@ -107,6 +107,9 @@ public class RegisterActivity extends AppCompatActivity {
         } else if (user_password.contains(" ")) {
             password.setError("Password must not contain spaces");
             return;
+        } else if (!user_password.matches("[a-zA-Z0-9]*")) {
+            password.setError("Password must not contain special characters");
+            return;
         }
 
         // Check if passwords match

@@ -90,16 +90,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Insert sample user data
         String insertUserQuery = String.format(
                 "INSERT INTO %s (%s, %s, %s, %s, %s) VALUES " +
-                        "('johnDoe', 'John Doe', 'john.doe@example.com', '1234567890', 'password123'), " +
-                        "('janeDoe', 'Jane Doe', 'jane.doe@example.com', '2345678901', 'password123'), " +
-                        "('michaelSmith', 'Michael Smith', 'michael.smith@example.com', '3456789012', 'password123'), " +
-                        "('emilyJohnson', 'Emily Johnson', 'emily.johnson@example.com', '4567890123', 'password123'), " +
-                        "('chrisWilliams', 'Chris Williams', 'chris.williams@example.com', '5678901234', 'password123'), " +
-                        "('sophiaBrown', 'Sophia Brown', 'sophia.brown@example.com', '6789012345', 'password123'), " +
-                        "('davidTaylor', 'David Taylor', 'david.taylor@example.com', '7890123456', 'password123'), " +
-                        "('oliviaMoore', 'Olivia Moore', 'olivia.moore@example.com', '8901234567', 'password123'), " +
-                        "('jamesClark', 'James Clark', 'james.clark@example.com', '9012345678', 'password123'), " +
-                        "('isabellaLewis', 'Isabella Lewis', 'isabella.lewis@example.com', '1123456789', 'password123')",
+                        "('johnDoe', 'John Doe', 'john.doe@gmail.com', '1234567890', 'password123'), " +
+                        "('janeDoe', 'Jane Doe', 'jane.doe@gmail.com', '2345678901', 'password123'), " +
+                        "('michaelSmith', 'Michael Smith', 'michael.smith@gmail.com', '3456789012', 'password123'), " +
+                        "('emilyJohnson', 'Emily Johnson', 'emily.johnson@gmail.com', '4567890123', 'password123'), " +
+                        "('chrisWilliams', 'Chris Williams', 'chris.williams@gmail.com', '5678901234', 'password123'), " +
+                        "('sophiaBrown', 'Sophia Brown', 'sophia.brown@gmail.com', '6789012345', 'password123'), " +
+                        "('davidTaylor', 'David Taylor', 'david.taylor@gmail.com', '7890123456', 'password123'), " +
+                        "('oliviaMoore', 'Olivia Moore', 'olivia.moore@gmail.com', '8901234567', 'password123'), " +
+                        "('jamesClark', 'James Clark', 'james.clark@gmail.com', '9012345678', 'password123'), " +
+                        "('isabellaLewis', 'Isabella Lewis', 'isabella.lewis@gmail.com', '1123456789', 'password123')",
                 TABLE_USERS, COLUMN_USERNAME, COLUMN_FULLNAME, COLUMN_EMAIL, COLUMN_PHONENUMBER, COLUMN_PASSWORD
         );
         db.execSQL(insertUserQuery);
@@ -181,10 +181,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean userAuth(String username, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = String.format(
-                "SELECT u.%s, u.%s, u.%s, u.%s, w.%s " +
+                "SELECT u.%s, u.%s, u.%s, u.%s, u.%s, u.%s, w.%s " +
                         "FROM %s u INNER JOIN %s w ON u.%s = w.%s " +
                         "WHERE u.%s = ? AND u.%s = ?",
-                COLUMN_USER_ID, COLUMN_PASSWORD, COLUMN_FULLNAME, COLUMN_USERNAME, COLUMN_WALLET_BALANCE,
+                COLUMN_USER_ID, COLUMN_PASSWORD, COLUMN_FULLNAME, COLUMN_USERNAME, COLUMN_EMAIL, COLUMN_PHONENUMBER, COLUMN_WALLET_BALANCE,
                 TABLE_USERS, TABLE_WALLETS, COLUMN_USER_ID, COLUMN_WALLET_USER_ID,
                 COLUMN_USERNAME, COLUMN_PASSWORD
         );
@@ -196,6 +196,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             pref.setLoginState(true);
             pref.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_USER_ID)));
             pref.setUsername(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USERNAME)));
+            pref.setEmail(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMAIL)) != null ? cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMAIL)) : "");
+            pref.setPhoneNumber(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PHONENUMBER)) != null ? cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PHONENUMBER)) : "");
             pref.setFullname(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_FULLNAME)));
             pref.setPassword(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PASSWORD)));
             pref.setBalance(cursor.getString(cursor.getColumnIndexOrThrow("current_balance")));
