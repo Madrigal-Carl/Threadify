@@ -36,6 +36,7 @@
         android:background="@drawable/amount_view"
         android:ems="10"
         android:hint="00.00"
+        android:maxLength="16"
         android:inputType="numberDecimal"
         android:paddingStart="15dp"
         android:paddingRight="40dp"

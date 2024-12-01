@@ -17,7 +17,7 @@
         android:ems="10"
         android:fontFamily="@font/poppins"
         android:hint="Full Name"
-        android:maxLength="18"
+        android:maxLength="30"
         android:textColor="@color/white"
         android:inputType="textPersonName"
         android:paddingHorizontal="20dp"
