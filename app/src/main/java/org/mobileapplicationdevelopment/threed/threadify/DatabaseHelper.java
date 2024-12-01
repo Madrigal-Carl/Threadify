@@ -354,7 +354,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ContentValues senderTransaction = new ContentValues();
             senderTransaction.put(COLUMN_TRANSACTION_USER_ID, senderId);
             senderTransaction.put(COLUMN_TRANSACTION_TYPE, "Send Money");
-            senderTransaction.put(COLUMN_TRANSACTION_AMOUNT, money);
+            senderTransaction.put(COLUMN_TRANSACTION_AMOUNT, -money);
             db.insert(TABLE_TRANSACTION_HISTORY, null, senderTransaction);
 
             // Insert recipient's transaction history
