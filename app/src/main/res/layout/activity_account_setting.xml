@@ -13,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:autofillHints=""
         android:background="@color/white"
         android:ems="10"
         android:enabled="false"
@@ -23,17 +24,18 @@
         android:textAlignment="center"
         android:textColor="@color/text_color_dark"
         android:textColorHint="@color/text_color_dark"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="@+id/usernameFld"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/usernameFld"
-        app:layout_constraintTop_toBottomOf="@+id/textView21"
-        android:autofillHints="" />
+        app:layout_constraintTop_toBottomOf="@+id/textView21" />
 
     <EditText
         android:id="@+id/usernameFld"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="35dp"
+        android:autofillHints=""
         android:background="@color/white"
         android:ems="10"
         android:enabled="false"
@@ -44,17 +46,18 @@
         android:textAlignment="center"
         android:textColor="@color/text_color_dark"
         android:textColorHint="@color/text_color_dark"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="@+id/fullnameFld"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/fullnameFld"
-        app:layout_constraintTop_toBottomOf="@+id/textView20"
-        android:autofillHints="" />
+        app:layout_constraintTop_toBottomOf="@+id/textView20" />
 
     <EditText
         android:id="@+id/fullnameFld"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
+        android:autofillHints=""
         android:background="@color/white"
         android:ems="10"
         android:enabled="false"
@@ -65,17 +68,18 @@
         android:textAlignment="center"
         android:textColor="@color/text_color_dark"
         android:textColorHint="@color/text_color_dark"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="@+id/imageView7"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="@+id/imageView7"
-        app:layout_constraintTop_toBottomOf="@+id/imageView7"
-        android:autofillHints="" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView7" />
 
     <EditText
         android:id="@+id/phoneNumberFld"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
+        android:autofillHints=""
         android:background="@color/white"
         android:ems="10"
         android:enabled="false"
@@ -87,10 +91,11 @@
         android:textAlignment="center"
         android:textColor="@color/text_color_dark"
         android:textColorHint="@color/text_color_dark"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="@+id/emailFld"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/emailFld"
-        app:layout_constraintTop_toBottomOf="@+id/textView22"
-        android:autofillHints="" />
+        app:layout_constraintTop_toBottomOf="@+id/textView22" />
 
     <ImageView
         android:id="@+id/imageView7"
