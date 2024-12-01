@@ -53,29 +53,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         "%s VARCHAR(30) NOT NULL UNIQUE, " +
                         "%s VARCHAR(30) NOT NULL, " +
-                        "%s VARCHAR(30) UNIQUE, " +
-                        "%s INTEGER UNIQUE, " +
+                        "%s VARCHAR(30), " +
+                        "%s INTEGER, " +
                         "%s VARCHAR(18) NOT NULL) ",
                 TABLE_USERS, COLUMN_USER_ID, COLUMN_USERNAME, COLUMN_FULLNAME, COLUMN_EMAIL, COLUMN_PHONENUMBER, COLUMN_PASSWORD
         );
         db.execSQL(userQuery);
-
-        // Insert sample user data
-        String insertUserQuery = String.format(
-                "INSERT INTO %s (%s, %s, %s, %s, %s) VALUES " +
-                        "('john_doe', 'John Doe', 'john.doe@example.com', '1234567890', 'password123'), " +
-                        "('jane_doe', 'Jane Doe', 'jane.doe@example.com', '2345678901', 'password123'), " +
-                        "('michael_smith', 'Michael Smith', 'michael.smith@example.com', '3456789012', 'password123'), " +
-                        "('emily_johnson', 'Emily Johnson', 'emily.johnson@example.com', '4567890123', 'password123'), " +
-                        "('chris_williams', 'Chris Williams', 'chris.williams@example.com', '5678901234', 'password123'), " +
-                        "('sophia_brown', 'Sophia Brown', 'sophia.brown@example.com', '6789012345', 'password123'), " +
-                        "('david_taylor', 'David Taylor', 'david.taylor@example.com', '7890123456', 'password123'), " +
-                        "('olivia_moore', 'Olivia Moore', 'olivia.moore@example.com', '8901234567', 'password123'), " +
-                        "('james_clark', 'James Clark', 'james.clark@example.com', '9012345678', 'password123'), " +
-                        "('isabella_lewis', 'Isabella Lewis', 'isabella.lewis@example.com', '0123456789', 'password123')",
-                TABLE_USERS, COLUMN_USERNAME, COLUMN_FULLNAME, COLUMN_EMAIL, COLUMN_PHONENUMBER, COLUMN_PASSWORD
-        );
-        db.execSQL(insertUserQuery);
 
         // Create the Wallets table
         String walletQuery = String.format(
@@ -103,6 +86,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_TRANSACTION_DATE, COLUMN_TRANSACTION_USER_ID, TABLE_USERS, COLUMN_USER_ID
         );
         db.execSQL(transactionHistoryQuery);
+
+        // Insert sample user data
+        String insertUserQuery = String.format(
+                "INSERT INTO %s (%s, %s, %s, %s, %s) VALUES " +
+                        "('johnDoe', 'John Doe', 'john.doe@example.com', '1234567890', 'password123'), " +
+                        "('janeDoe', 'Jane Doe', 'jane.doe@example.com', '2345678901', 'password123'), " +
+                        "('michaelSmith', 'Michael Smith', 'michael.smith@example.com', '3456789012', 'password123'), " +
+                        "('emilyJohnson', 'Emily Johnson', 'emily.johnson@example.com', '4567890123', 'password123'), " +
+                        "('chrisWilliams', 'Chris Williams', 'chris.williams@example.com', '5678901234', 'password123'), " +
+                        "('sophiaBrown', 'Sophia Brown', 'sophia.brown@example.com', '6789012345', 'password123'), " +
+                        "('davidTaylor', 'David Taylor', 'david.taylor@example.com', '7890123456', 'password123'), " +
+                        "('oliviaMoore', 'Olivia Moore', 'olivia.moore@example.com', '8901234567', 'password123'), " +
+                        "('jamesClark', 'James Clark', 'james.clark@example.com', '9012345678', 'password123'), " +
+                        "('isabellaLewis', 'Isabella Lewis', 'isabella.lewis@example.com', '1123456789', 'password123')",
+                TABLE_USERS, COLUMN_USERNAME, COLUMN_FULLNAME, COLUMN_EMAIL, COLUMN_PHONENUMBER, COLUMN_PASSWORD
+        );
+        db.execSQL(insertUserQuery);
+
+        // Insert corresponding wallet data for each user
+        String insertWalletQuery = String.format(
+                "INSERT INTO %s (%s, %s) VALUES " +
+                        "(1, 100.0), " +
+                        "(2, 150.0), " +
+                        "(3, 200.0), " +
+                        "(4, 250.0), " +
+                        "(5, 300.0), " +
+                        "(6, 350.0), " +
+                        "(7, 400.0), " +
+                        "(8, 450.0), " +
+                        "(9, 500.0), " +
+                        "(10, 550.0) ",
+                TABLE_WALLETS, COLUMN_WALLET_USER_ID, COLUMN_WALLET_BALANCE
+        );
+        db.execSQL(insertWalletQuery);
     }
 
     @Override

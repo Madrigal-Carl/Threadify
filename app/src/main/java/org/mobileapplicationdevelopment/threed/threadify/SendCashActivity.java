@@ -109,11 +109,11 @@ public class SendCashActivity extends AppCompatActivity implements View.OnClickL
 
     // Update the input amount when a button is clicked
     private void changeInputText(double money) {
-        double sum = 0;
+        double sum = 0.0;
         if (!addInput.getText().toString().isEmpty()) {
             sum = Double.parseDouble(addInput.getText().toString());
         }
-        addInput.setText(String.format("%d", sum + money));
+        addInput.setText(String.format("%.2f", sum + money));
     }
 
     // Handle button clicks for adding amounts or submitting the form
@@ -142,7 +142,7 @@ public class SendCashActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    // Main method to handle sending cash
+    // Handle sending cash
     private void sendCash(double money) {
         SharedPreferences pref = new SharedPreferences(this);
 

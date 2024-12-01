@@ -76,12 +76,12 @@ public class CashInActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     // Updates the input field with the selected money amount
-    private void changeInputText(int money) {
+    private void changeInputText(double money) {
         double sum = 0.0;
         if (!addInput.getText().toString().isEmpty()) {
             sum = Double.parseDouble(addInput.getText().toString());
         }
-        addInput.setText(String.format("%d", sum + money));
+        addInput.setText(String.format("%.2f", sum + money));
     }
 
     // Handles button clicks to update the input field or submit the amount

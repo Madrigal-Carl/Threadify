@@ -62,7 +62,9 @@ public class LoginActivity extends AppCompatActivity {
 
         // Check credentials using the database helper
         if (db.userAuth(user_name, pass)) {
-            Toast.makeText(this, String.format("Welcome %s", user_name), Toast.LENGTH_SHORT).show();
+            SharedPreferences pref = new SharedPreferences(this);
+
+            Toast.makeText(this, String.format("Welcome %s", pref.getFullname()), Toast.LENGTH_SHORT).show();
             Intent toMain = new Intent(this, MainMenuActivity.class);
             startActivity(toMain);
             finish();

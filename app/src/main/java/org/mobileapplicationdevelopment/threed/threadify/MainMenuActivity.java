@@ -54,6 +54,7 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         cashIn.setOnClickListener(this);
         cashOut.setOnClickListener(this);
         buyLoad.setOnClickListener(this);
+        payBills.setOnClickListener(this);
         transaction_history.setOnClickListener(this);
     }
 
@@ -77,7 +78,6 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
 
             // Notify the user that this feature is under development
             case R.id.buy_loadBtn:
-
             case R.id.pay_billsBtn:
                 Toast.makeText(this, "This feature is under development", Toast.LENGTH_SHORT).show();
                 break;
