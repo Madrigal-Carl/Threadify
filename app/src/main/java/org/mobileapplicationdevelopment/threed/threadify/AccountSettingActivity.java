@@ -48,7 +48,6 @@ public class AccountSettingActivity extends AppCompatActivity {
         username.setText(pref.getUsername());
         email.setText(pref.getEmail());
         phoneNumber.setText(pref.getPhoneNumber());
-
     }
 
     // Toggles input fields between enabled and disabled states
@@ -61,6 +60,7 @@ public class AccountSettingActivity extends AppCompatActivity {
 
     // Enables user to edit their information
     private void editInformation() {
+        setEditIcon(true);
         disableInput(onEdit);
         onEdit = true;
     }
@@ -73,6 +73,22 @@ public class AccountSettingActivity extends AppCompatActivity {
                 !pref.getPhoneNumber().equals(phone);
     }
 
+    public void setEditIcon(boolean enable) {
+        if (enable) {
+            // Enable the drawable
+            fullname.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.drawable_pen, 0);
+            username.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.drawable_pen, 0);
+            email.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.drawable_pen, 0);
+            phoneNumber.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.drawable_pen, 0);
+        } else {
+            // Disable the drawable by setting it to null
+            fullname.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
+            username.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
+            email.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
+            phoneNumber.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
+        }
+    }
+
     // Saves user information after validating changes and confirming the password
     private void saveInformation() {
         String full = fullname.getText().toString().trim();
@@ -81,6 +97,7 @@ public class AccountSettingActivity extends AppCompatActivity {
         String phone = phoneNumber.getText().toString().trim();
 
         if (!checkChanges(full, user, user_email, phone)){
+            setEditIcon(false);
             disableInput(onEdit);
             onEdit = false;
             return;
@@ -125,6 +142,8 @@ public class AccountSettingActivity extends AppCompatActivity {
                         if (!phone.isEmpty()){
                             db.setPhoneNumber(phone);
                         }
+
+                        setEditIcon(false);
                         disableInput(onEdit);
                         onEdit = false;
                         Toast.makeText(getApplicationContext(), "Your Information has been updated", Toast.LENGTH_SHORT).show();
@@ -133,7 +152,7 @@ public class AccountSettingActivity extends AppCompatActivity {
                     }
                 })
                 .setNegativeButton("Cancel", (dialog, which) -> {
-                    // User canceled, nothing happens
+
                 })
                 .show();
     }
