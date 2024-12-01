@@ -10,10 +10,10 @@ What sets Threadify apart is its robust security features, ensuring that your tr
     <string name="elpieBio">I am Elpie Landoy, a creative and detail-oriented graphics Designer with 3years of experience in crafting visually compelling designs for digital and print media. I specialize creating brand identities, marketing materials, and UI/UX designs. I hold a Bachelors of Science in Information Technology Software Development Track at Marinduque State University.</string>
     <string name="aldrinbio">I am Aldrin James Palma, an innovative and detail-oriented Content Strategist with 2years of experience in planning, developing, and managing content strategies that drive user engagement and achieve business goal. I specialize in creating user-centered content that enhances app usability and retention. I hold a Bachelors of Science in Information Technology Software Development Track at Marinduque State University.</string>
     <string name="about_threadify">About Threadify</string>
-    <string name="accountSettingEmail">Enter your email</string>
-    <string name="accountSettingUsername">Enter your username</string>
-    <string name="accountSettingFullname">Enter your full name</string>
-    <string name="accountSettingPhoneNumber">Enter your phone number</string>
+    <string name="accountSettingEmail">Email</string>
+    <string name="accountSettingUsername">Username</string>
+    <string name="accountSettingFullname">Fullname</string>
+    <string name="accountSettingPhoneNumber">Phone No.</string>
     <string name="accountSettingTodo">TODO</string>
     <string name="meet_the_developers">Meet the Developers</string>
 </resources>
