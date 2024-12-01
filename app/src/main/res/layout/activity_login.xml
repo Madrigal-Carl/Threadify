@@ -41,10 +41,10 @@
         android:ems="10"
         android:fontFamily="@font/poppins"
         android:hint="Username"
-        android:maxLength="16"
-        android:textColor="@color/white"
         android:inputType="textPersonName"
+        android:maxLength="16"
         android:paddingHorizontal="20dp"
+        android:textColor="@color/white"
         android:textColorHint="@color/hinttxtcolor"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
         tools:layout_editor_absoluteX="50dp" />
@@ -58,10 +58,10 @@
         android:ems="10"
         android:fontFamily="@font/poppins"
         android:hint="Password"
-        android:maxLength="16"
-        android:textColor="@color/white"
         android:inputType="textPassword"
+        android:maxLength="16"
         android:paddingHorizontal="20dp"
+        android:textColor="@color/white"
         android:textColorHint="@color/hinttxtcolor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.595"
@@ -83,9 +83,26 @@
         app:layout_constraintTop_toBottomOf="@+id/passwordLoginFld" />
 
     <TextView
+        android:id="@+id/registerBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginEnd="60dp"
+        android:clickable="true"
+        android:fontFamily="@font/poppins"
+        android:minHeight="48dp"
+        android:text="Register"
+        android:textColor="@color/link_color"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/registerBtn2"
+        app:layout_constraintEnd_toEndOf="@+id/loginBtn"
+        app:layout_constraintTop_toTopOf="@+id/registerBtn2"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
         android:id="@+id/registerBtn2"
         android:layout_width="wrap_content"
-        android:layout_height="25dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="68dp"
         android:clickable="true"
         android:fontFamily="@font/poppins"
         android:minHeight="48dp"
@@ -94,25 +111,9 @@
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/registerBtn"
-        app:layout_constraintHorizontal_bias="0.793"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/loginBtn"
         app:layout_constraintTop_toBottomOf="@+id/loginBtn"
-        app:layout_constraintVertical_bias="0.916" />
-
-    <TextView
-        android:id="@+id/registerBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="25dp"
-        android:layout_marginEnd="60dp"
-        android:clickable="true"
-        android:fontFamily="@font/poppins"
-        android:minHeight="48dp"
-        android:text="Register"
-        android:textColor="@color/link_color"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/loginBtn"
-        app:layout_constraintTop_toBottomOf="@+id/loginBtn"
-        app:layout_constraintVertical_bias="0.916" />
+        app:layout_constraintVertical_bias="0.895" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
