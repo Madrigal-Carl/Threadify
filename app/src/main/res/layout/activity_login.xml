@@ -83,30 +83,37 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordLoginFld" />
 
-    <TextView
-        android:id="@+id/registerBtn2"
+    <LinearLayout
+        android:id="@+id/registerGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:autoSizeTextType="uniform"
-        android:fontFamily="@font/poppins"
-        android:text="Don'have an account?"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline12"
-        app:layout_constraintStart_toStartOf="@+id/guideline9" />
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/loginBtn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="245dp">
 
-    <TextView
-        android:id="@+id/registerBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:autoSizeTextType="uniform"
-        android:clickable="true"
-        android:fontFamily="@font/poppins"
-        android:text="Register"
-        android:textColor="@color/link_color"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline12"
-        app:layout_constraintEnd_toStartOf="@+id/guideline8" />
+        <TextView
+            android:id="@+id/registerBtn2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
+            android:text="Don't have an account?"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/registerBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:clickable="true"
+            android:fontFamily="@font/poppins"
+            android:text="Register"
+            android:textColor="@color/link_color"
+            android:textSize="12sp" />
+    </LinearLayout>
+
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
@@ -114,13 +121,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.1" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="62dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"
@@ -144,24 +144,10 @@
         app:layout_constraintGuide_percent="0.70" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="250dp" />
-
-    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.90" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.95" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

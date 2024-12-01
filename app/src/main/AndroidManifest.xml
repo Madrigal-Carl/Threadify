@@ -83,8 +83,7 @@
         <activity
             android:name=".LoginActivity"
             android:exported="false"
-            android:theme="@style/splash_screen"
-            android:windowSoftInputMode="adjustResize">
+            android:theme="@style/splash_screen">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
