@@ -63,11 +63,49 @@ public class RegisterActivity extends AppCompatActivity {
         String user_password = password.getText().toString().trim();
         String confirm_pass = confirm_password.getText().toString().trim();
 
+        validation(full_name, user_name, user_password, confirm_pass);
+
+        // Add user to database
+        if (db.addUser(full_name, user_name, user_password)) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Account Created")
+                    .setMessage("Your account is now ready.")
+                    .setPositiveButton("Proceed", (dialogInterface, i) -> {
+                        Intent toLogin = new Intent(RegisterActivity.this, LoginActivity.class);
+                        startActivity(toLogin);
+                        finish();
+                    }).show();
+        }
+    }
+
+    public void validation(String full_name, String user_name, String user_password, String confirm_pass) {
+
         // Check for empty fields
-        if (full_name.isEmpty() && user_name.isEmpty() && user_password.isEmpty()) {
+        if (full_name.isEmpty() && user_name.isEmpty() && user_password.isEmpty() && confirm_pass.isEmpty()) {
             fullname.setError("Input your full name");
             username.setError("Input your username");
             password.setError("Input your password");
+            confirm_password.setError("Confirm your password");
+            return;
+        } else if (full_name.isEmpty() && user_name.isEmpty() && user_password.isEmpty()) {
+            fullname.setError("Input your full name");
+            username.setError("Input your username");
+            password.setError("Input your password");
+            return;
+        } else if (full_name.isEmpty() && user_name.isEmpty() && confirm_pass.isEmpty()) {
+            fullname.setError("Input your full name");
+            username.setError("Input your username");
+            confirm_password.setError("Confirm your password");
+            return;
+        } else if (full_name.isEmpty() && user_password.isEmpty() && confirm_pass.isEmpty()) {
+            fullname.setError("Input your full name");
+            password.setError("Input your password");
+            confirm_password.setError("Confirm your password");
+            return;
+        } else if (user_name.isEmpty() && user_password.isEmpty() && confirm_pass.isEmpty()) {
+            username.setError("Input your username");
+            password.setError("Input your password");
+            confirm_password.setError("Confirm your password");
             return;
         } else if (full_name.isEmpty() && user_name.isEmpty()) {
             fullname.setError("Input your full name");
@@ -77,9 +115,21 @@ public class RegisterActivity extends AppCompatActivity {
             fullname.setError("Input your full name");
             password.setError("Input your password");
             return;
+        } else if (full_name.isEmpty() && confirm_pass.isEmpty()) {
+            fullname.setError("Input your full name");
+            confirm_password.setError("Confirm your password");
+            return;
         } else if (user_name.isEmpty() && user_password.isEmpty()) {
             username.setError("Input your username");
             password.setError("Input your password");
+            return;
+        } else if (user_name.isEmpty() && confirm_pass.isEmpty()) {
+            username.setError("Input your username");
+            confirm_password.setError("Confirm your password");
+            return;
+        } else if (user_password.isEmpty() && confirm_pass.isEmpty()) {
+            password.setError("Input your password");
+            confirm_password.setError("Confirm your password");
             return;
         } else if (full_name.isEmpty()) {
             fullname.setError("Input your full name");
@@ -89,6 +139,9 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         } else if (user_password.isEmpty()) {
             password.setError("Input your password");
+            return;
+        } else if (confirm_pass.isEmpty()) {
+            confirm_password.setError("Confirm your password");
             return;
         }
 
@@ -118,18 +171,6 @@ public class RegisterActivity extends AppCompatActivity {
             password.setText("");
             confirm_password.setText("");
             return;
-        }
-
-        // Add user to database
-        if (db.addUser(full_name, user_name, user_password)) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Account Created")
-                    .setMessage("Your account is now ready.")
-                    .setPositiveButton("Proceed", (dialogInterface, i) -> {
-                        Intent toLogin = new Intent(RegisterActivity.this, LoginActivity.class);
-                        startActivity(toLogin);
-                        finish();
-                    }).show();
         }
     }
 

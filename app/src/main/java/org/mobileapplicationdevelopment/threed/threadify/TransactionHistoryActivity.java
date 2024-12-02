@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -101,5 +102,15 @@ public class TransactionHistoryActivity extends AppCompatActivity {
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // Handle the back button press to navigate to the main menu
+    @SuppressWarnings("deprecation")
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, MainMenuActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

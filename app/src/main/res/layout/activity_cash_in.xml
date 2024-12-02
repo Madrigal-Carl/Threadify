@@ -13,23 +13,23 @@
         android:id="@+id/addInput"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="5dp"
+        android:autofillHints=""
         android:background="@drawable/amount_view"
         android:ems="10"
         android:hint="00.00"
         android:inputType="numberDecimal"
+        android:maxLength="16"
         android:paddingStart="15dp"
         android:paddingEnd="40dp"
         android:textAlignment="textEnd"
         android:textColor="@color/white"
         android:textColorHint="#4DFFFFFF"
-        android:maxLength="16"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:autofillHints="" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <GridLayout
         android:id="@+id/gridLayout2"
@@ -50,6 +50,7 @@
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:layout_gravity="fill"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/numpad"
@@ -58,9 +59,7 @@
             android:minHeight="100dp"
             android:text="10"
             android:textColor="@color/buttonColor"
-            android:textSize="18sp"
-            tools:layout_editor_absoluteX="72dp"
-            tools:layout_editor_absoluteY="281dp" />
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/add20"
@@ -69,6 +68,7 @@
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:layout_gravity="fill"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/numpad"
             android:fontFamily="@font/poppins_semibold"
@@ -76,9 +76,7 @@
             android:minHeight="100dp"
             android:text="20"
             android:textColor="@color/buttonColor"
-            android:textSize="18sp"
-            tools:layout_editor_absoluteX="176dp"
-            tools:layout_editor_absoluteY="281dp" />
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/add50"
@@ -89,15 +87,14 @@
             android:layout_gravity="fill"
             android:layout_marginStart="10dp"
             android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/numpad"
             android:fontFamily="@font/poppins_semibold"
             android:minWidth="150dp"
             android:minHeight="100dp"
             android:text="50"
             android:textColor="@color/buttonColor"
-            android:textSize="18sp"
-            tools:layout_editor_absoluteX="283dp"
-            tools:layout_editor_absoluteY="281dp" />
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/add100"
@@ -114,9 +111,7 @@
             android:minHeight="100dp"
             android:text="100"
             android:textColor="@color/buttonColor"
-            android:textSize="18sp"
-            tools:layout_editor_absoluteX="72dp"
-            tools:layout_editor_absoluteY="341dp" />
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/add200"
@@ -132,9 +127,7 @@
             android:minHeight="100dp"
             android:text="200"
             android:textColor="@color/buttonColor"
-            android:textSize="18sp"
-            tools:layout_editor_absoluteX="171dp"
-            tools:layout_editor_absoluteY="341dp" />
+            android:textSize="18sp"/>
 
         <Button
             android:id="@+id/add500"
@@ -151,9 +144,7 @@
             android:minHeight="100dp"
             android:text="500"
             android:textColor="@color/buttonColor"
-            android:textSize="18sp"
-            tools:layout_editor_absoluteX="283dp"
-            tools:layout_editor_absoluteY="341dp" />
+            android:textSize="18sp"/>
 
         <Button
             android:id="@+id/add1000"
@@ -163,15 +154,14 @@
             android:layout_columnWeight="1"
             android:layout_gravity="fill"
             android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/numpad"
             android:fontFamily="@font/poppins_semibold"
             android:minWidth="150dp"
             android:minHeight="100dp"
             android:text="1,000"
             android:textColor="@color/buttonColor"
-            android:textSize="18sp"
-            tools:layout_editor_absoluteX="72dp"
-            tools:layout_editor_absoluteY="410dp" />
+            android:textSize="18sp"/>
 
         <Button
             android:id="@+id/add5000"
@@ -179,6 +169,7 @@
             android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
+            android:layout_marginBottom="10dp"
             android:layout_gravity="fill"
             android:background="@drawable/numpad"
             android:fontFamily="@font/poppins_semibold"
@@ -186,9 +177,7 @@
             android:minHeight="100dp"
             android:text="5,000"
             android:textColor="@color/buttonColor"
-            android:textSize="18sp"
-            tools:layout_editor_absoluteX="176dp"
-            tools:layout_editor_absoluteY="410dp" />
+            android:textSize="18sp"/>
 
         <Button
             android:id="@+id/add10000"
@@ -197,6 +186,7 @@
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:layout_gravity="fill"
+            android:layout_marginBottom="10dp"
             android:layout_marginStart="10dp"
             android:background="@drawable/numpad"
             android:fontFamily="@font/poppins_semibold"
@@ -204,9 +194,7 @@
             android:minHeight="100dp"
             android:text="10,000"
             android:textColor="@color/buttonColor"
-            android:textSize="18sp"
-            tools:layout_editor_absoluteX="283dp"
-            tools:layout_editor_absoluteY="410dp" />
+            android:textSize="18sp"/>
 
     </GridLayout>
 
@@ -214,18 +202,18 @@
         android:id="@+id/submit"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:textSize="18sp"
-        android:paddingTop="7dp"
         android:layout_marginTop="40dp"
         android:background="@drawable/btnstyle"
         android:fontFamily="@font/poppins_semibold"
+        android:paddingTop="7dp"
         android:text="Cash In"
         android:textAllCaps="false"
         android:textColor="@color/white"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gridLayout2"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.027" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
