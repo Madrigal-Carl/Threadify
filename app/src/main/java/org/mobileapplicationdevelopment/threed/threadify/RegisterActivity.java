@@ -65,6 +65,14 @@ public class RegisterActivity extends AppCompatActivity {
 
         validation(full_name, user_name, user_password, confirm_pass);
 
+        // Check if passwords match
+        if (!user_password.equals(confirm_pass)) {
+            Toast.makeText(this, "Passwords do not match. Please re-enter.", Toast.LENGTH_SHORT).show();
+            password.setText("");
+            confirm_password.setText("");
+            return;
+        }
+
         // Add user to database
         if (db.addUser(full_name, user_name, user_password)) {
             new AlertDialog.Builder(this)
@@ -162,14 +170,6 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         } else if (!user_password.matches("[a-zA-Z0-9]*")) {
             password.setError("Password must not contain special characters");
-            return;
-        }
-
-        // Check if passwords match
-        if (!user_password.equals(confirm_pass)) {
-            Toast.makeText(this, "Passwords do not match. Please re-enter.", Toast.LENGTH_SHORT).show();
-            password.setText("");
-            confirm_password.setText("");
             return;
         }
     }
