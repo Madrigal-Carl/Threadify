@@ -56,8 +56,10 @@ public class LoginActivity extends AppCompatActivity {
             return;
         } else if (user_name.isEmpty()) {
             username.setError("Input your username");
+            return;
         } else if (pass.isEmpty()) {
             password.setError("Input your password");
+            return;
         }
 
         // Check credentials using the database helper
